@@ -1,0 +1,12 @@
+torch>=2.2
+transformers>=4.40
+scikit-learn
+numpy
+pandas
+pyarrow
+spacy>=3.7,<4
+spacy-curated-transformers  # only for exporting RoBERTa from en_core_web_trf
+vaderSentiment
+matplotlib
+seaborn
+jupyter

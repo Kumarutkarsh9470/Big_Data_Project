@@ -1,0 +1,600 @@
+battery life	657
+usb ports	330
+customer service	281
+sd card	279
+picture quality	272
+usb port	265
+ear buds	259
+screen protector	253
+cell phone	224
+power strip	189
+power supply	168
+hdmi cable	155
+surge protector	152
+dvd player	146
+volume control	126
+power cord	122
+flash drive	120
+usb cable	118
+touch screen	117
+memory card	116
+noise cancellation	112
+build quality	109
+phone calls	109
+fire stick	108
+tech support	101
+sound bar	94
+cd player	91
+power button	88
+night vision	87
+carrying case	86
+echo dot	83
+screen protectors	82
+headphone jack	79
+sd cards	78
+video quality	78
+card reader	75
+usb hub	71
+flash drives	71
+laptop bag	70
+usb cord	70
+keyboard cover	69
+extension cord	68
+dash cam	65
+ethernet cable	65
+security camera	65
+data transfer	65
+shoulder strap	63
+ear pieces	62
+background noise	62
+alarm clock	59
+aa batteries	59
+hdmi cables	58
+ipad mini	57
+camera bag	57
+docking station	57
+sleep mode	56
+image quality	56
+power adapter	55
+product description	53
+bluetooth speaker	53
+customer support	53
+star rating	53
+hdmi port	50
+surround sound	50
+thumb drive	49
+memory cards	49
+desktop computer	49
+power strips	49
+motion detection	48
+usb plug	48
+cell phones	46
+power cable	46
+aaa batteries	45
+storage space	45
+phone call	45
+phone charger	45
+battery pack	43
+home theater	43
+hp laptop	42
+scroll wheel	42
+internet connection	42
+surge protectors	42
+ipad case	42
+video card	41
+power source	41
+deal breaker	41
+bluetooth headphones	41
+mouse pad	40
+lens cap	40
+fire tablet	40
+transfer speeds	40
+ring light	39
+usb cables	39
+year warranty	39
+usb power	39
+kindle fire	38
+protection plan	38
+cable box	38
+usb charger	38
+work laptop	37
+ear bud	37
+ear piece	37
+ear pads	36
+phone case	36
+fm radio	36
+graphics card	36
+family members	35
+surge protection	35
+tv remote	35
+voice recognition	34
+suction cup	34
+user interface	34
+quality control	34
+speaker system	33
+ear cups	33
+android phone	33
+wrist strap	32
+wifi signal	32
+ac adapter	32
+camera lens	31
+tv stand	31
+security cameras	31
+extension cable	31
+charging case	31
+keyboard case	31
+cable ties	31
+cable modem	31
+sim card	30
+volume buttons	30
+noise cancelling	30
+usb connection	30
+phone holder	30
+laptop stand	30
+video camera	29
+ear headphones	29
+laptop sleeve	29
+ear phones	29
+usb devices	29
+monitor stand	29
+form factor	29
+usb outlets	28
+radio stations	28
+usb drive	28
+cord length	27
+battery charger	27
+night light	27
+lightning cable	27
+glass screen	27
+samsung phone	27
+usb connector	26
+desk space	26
+thumb drives	26
+family member	26
+power bank	26
+bluetooth speakers	26
+security system	26
+cable management	26
+power supplies	26
+laptop case	26
+operating system	25
+gaming laptop	25
+dvd drive	25
+usb plugs	25
+messenger bag	25
+microsd card	25
+head phones	25
+ethernet port	25
+camera system	24
+laptop screen	24
+number pad	24
+wifi connection	24
+ipad screen	24
+shoulder straps	24
+computer monitor	24
+home network	24
+screen size	24
+bluetooth connection	24
+apple devices	24
+record player	24
+firmware update	24
+internet speed	24
+card slot	23
+picture frame	23
+usb adapter	23
+cleaning cloth	23
+charger cord	23
+video games	23
+apple pencil	23
+battery compartment	23
+label maker	23
+power switch	23
+design flaw	23
+usb flash	23
+web site	23
+noise reduction	23
+mm lens	23
+quality materials	23
+computer screen	23
+lcd screen	22
+car stereo	22
+quality	5018
+case	4632
+price	4171
+phone	3316
+cable	3164
+camera	3155
+laptop	2973
+sound	2873
+usb	2787
+screen	2510
+battery	2364
+computer	2155
+power	1946
+cord	1945
+device	1927
+keyboard	1781
+headphones	1717
+size	1687
+tablet	1644
+music	1461
+cover	1455
+cables	1393
+drive	1377
+bag	1357
+mouse	1348
+speaker	1315
+light	1297
+video	1276
+ear	1241
+devices	1235
+card	1215
+color	1211
+picture	1197
+batteries	1159
+life	1128
+box	1126
+charger	1126
+unit	1116
+design	1065
+set	1025
+speakers	1015
+stand	1014
+adapter	1008
+monitor	1007
+port	994
+volume	971
+system	935
+ports	915
+brand	878
+noise	858
+app	849
+plug	835
+remote	821
+cords	816
+button	807
+connection	804
+space	804
+desk	749
+replacement	744
+pictures	742
+speed	738
+lens	730
+charge	726
+ears	724
+instructions	711
+value	709
+earbuds	684
+protection	682
+features	679
+cameras	656
+wall	656
+feature	654
+buttons	650
+radio	649
+router	647
+storage	636
+player	634
+fan	627
+plastic	622
+keys	587
+range	580
+weight	577
+bass	576
+piece	574
+pair	570
+service	569
+length	559
+photos	559
+protector	552
+fit	543
+wifi	539
+model	538
+setup	537
+lights	524
+pocket	521
+watch	520
+videos	512
+drives	509
+colors	506
+memory	498
+software	495
+stuff	489
+control	488
+signal	486
+phones	482
+strap	481
+touch	477
+data	475
+option	475
+plugs	470
+buds	470
+internet	466
+version	461
+antenna	457
+support	452
+backpack	451
+material	451
+update	448
+audio	445
+performance	438
+band	432
+options	426
+mount	426
+hub	423
+cost	420
+wire	419
+metal	408
+level	405
+switch	403
+air	399
+movies	396
+tripod	396
+line	395
+settings	394
+gaming	394
+apps	393
+outlets	391
+files	387
+fire	386
+water	382
+look	381
+headset	380
+pad	378
+desktop	375
+table	374
+flash	372
+kindle	371
+outlet	366
+angle	363
+leather	363
+display	363
+pack	363
+dvd	361
+installation	357
+base	346
+wires	344
+photo	342
+surface	342
+ipad	341
+cards	337
+kit	336
+games	333
+security	329
+projector	326
+rubber	326
+machine	324
+package	323
+cell	322
+frame	322
+mode	321
+calls	319
+headphone	319
+connector	315
+tech	314
+speeds	311
+warranty	310
+charging	308
+mic	308
+style	307
+channels	301
+strip	297
+description	297
+pockets	293
+tablets	292
+holder	291
+image	289
+access	285
+microphone	284
+function	284
+voice	283
+equipment	279
+chargers	278
+surge	274
+screws	273
+adapters	269
+stick	268
+ring	267
+network	265
+controls	265
+position	264
+electronics	263
+sleep	263
+motion	262
+lenses	260
+computers	258
+laptops	258
+pieces	255
+ability	253
+shipping	253
+feel	251
+fans	250
+bar	250
+monitors	249
+printer	244
+extension	244
+jack	242
+receiver	241
+streaming	240
+zipper	239
+packaging	236
+slot	236
+stereo	236
+pen	234
+sleeve	234
+board	233
+store	232
+dust	230
+stations	229
+connections	228
+ease	226
+brands	226
+directions	225
+return	224
+hardware	224
+movie	222
+game	222
+reader	221
+alarm	220
+dot	219
+accessories	219
+clock	217
+glass	216
+paper	216
+clip	215
+tape	215
+height	215
+build	214
+information	212
+station	211
+connectors	210
+window	208
+supply	207
+lighting	207
+echo	203
+resolution	203
+tool	201
+rating	201
+wireless	200
+purse	199
+background	199
+web	199
+screw	198
+functionality	197
+functions	197
+input	197
+manual	192
+modem	192
+construction	192
+mini	192
+shape	191
+holes	191
+drivers	191
+duty	190
+durability	190
+process	189
+wrist	189
+handle	187
+view	185
+sides	184
+call	184
+backup	184
+padding	183
+upgrade	183
+distance	183
+transfer	182
+grip	181
+stickers	181
+bands	180
+straps	179
+weather	177
+television	175
+output	175
+variety	175
+arm	174
+play	173
+sizes	173
+heat	173
+covers	173
+ethernet	172
+setting	172
+reception	172
+response	172
+charges	172
+images	171
+neck	171
+technology	171
+comfort	170
+cloth	169
+capacity	168
+earphones	168
+protectors	167
+hole	167
+interface	167
+channel	167
+refund	167
+ties	166
+face	166
+compartment	166
+cam	164
+clarity	163
+pads	162
+bluetooth	162
+delivery	162
+ends	160
+location	159
+silicone	159
+edge	159
+photography	159
+source	159
+key	158
+auto	157
+improvement	157
+edges	155
+clips	154
+website	154
+recording	154
+plus	153
+apple	153
+media	152
+dog	151
+keyboards	151
+future	151
+models	150
+ton	150
+windows	149
+screens	149
+fabric	149
+film	148
+info	148
+filter	148
+rate	147
+date	147
+places	147
+driver	147
+pros	146
+cap	146
+foam	146
+purposes	145
+fault	145
+corners	145
+amp	145
+dongle	145
+cat	145
+body	144
+damage	144
+tvs	143
+lap	143
+profile	143
+breeze	143
+middle	143
+extender	143
+legs	143
+step	142
+types	142
+shoulder	142
+decision	142
+sense	142
+sale	142
+party	142
+bubbles	141
+lightning	141
+fitbit	141
+fingers	141
+guy	140
+slots	140
+luck	140
+graphics	139
+glasses	139
+ram	138
+shows	138
+mounts	137
+tools	137
+email	137
+garage	136
+panel	135
+cancellation	135
+units	135
+stock	134
+zoom	134
+eyes	133
