@@ -209,7 +209,7 @@ def main(argv=None):
     ap.add_argument("--no-pos", action="store_true", help="disable POS-tag embeddings")
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--epochs", type=int, default=None)
-    ap.add_argument("--patience", type=int, default=5)
+    ap.add_argument("--patience", type=int, default=8)
     ap.add_argument("--bs", type=int, default=None)
     ap.add_argument("--lr", type=float, default=None)
     ap.add_argument("--plm", default=os.path.join(ROOT, "resources", "roberta-base-spacy"))
@@ -217,6 +217,7 @@ def main(argv=None):
     ap.add_argument("--threads", type=int, default=4)
     ap.add_argument("--eval-on", nargs="*", default=[], help="extra test sets, e.g. amazon23_gold rest14")
     ap.add_argument("--tag", default="")
+    ap.add_argument("--save-model", default=None, help="path to save the best model (+vocab) for later inference")
     ap.add_argument("--out", default=os.path.join(ROOT, "results", "runs"))
     args = ap.parse_args(argv)
 
@@ -318,6 +319,11 @@ def main(argv=None):
     res["dev"] = metrics([f["y"] for f in fdv], pdv.argmax(1))
     with open(out_json, "w") as f:
         json.dump(res, f, indent=1)
+    if args.save_model:
+        os.makedirs(os.path.dirname(os.path.abspath(args.save_model)), exist_ok=True)
+        torch.save({"state_dict": model.state_dict(), "args": vars(args),
+                    "vocab": vocab.itos if vocab is not None else None,
+                    "emb": vocab.emb if vocab is not None else None}, args.save_model)
     with open(out_json.replace(".json", ".preds.json"), "w") as f:
         json.dump(preds, f)
     print(f"[{name}] DONE " + " ".join(f"{k}: acc={v['acc']:.4f} f1={v['f1']:.4f}" for k, v in res["test"].items())

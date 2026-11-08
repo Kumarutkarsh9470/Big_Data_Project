@@ -40,15 +40,18 @@ class GATLayer(nn.Module):
     If n_rel > 0 the dependency relation of edge (i,j) adds a learned bias to the
     attention logit and a relation embedding to the message."""
 
-    def __init__(self, d_in, d_out, heads=4, n_rel=0, dropout=0.1):
+    def __init__(self, d_in, d_out, heads=4, n_rel=0, dropout=0.1, norm=True):
         super().__init__()
+        self.use_norm = norm
         assert d_out % heads == 0
         self.h, self.dk = heads, d_out // heads
         self.W = nn.Linear(d_in, d_out, bias=False)
         self.a_src = nn.Parameter(torch.empty(heads, self.dk))
         self.a_dst = nn.Parameter(torch.empty(heads, self.dk))
-        nn.init.xavier_uniform_(self.a_src)
-        nn.init.xavier_uniform_(self.a_dst)
+        # zero init => uniform attention over dependency neighbours at the start,
+        # i.e. the layer starts as GCN-style mean aggregation and learns to deviate
+        nn.init.zeros_(self.a_src)
+        nn.init.zeros_(self.a_dst)
         self.n_rel = n_rel
         if n_rel:
             self.rel_bias = nn.Embedding(n_rel, heads)
@@ -78,6 +81,10 @@ class GATLayer(nn.Module):
             M = torch.zeros(B, N, self.n_rel, device=h.device, dtype=att.dtype)
             M.scatter_add_(2, rel, att.mean(-1))                      # B N R
             msg = msg + M @ self.rel_msg.weight
+        if not self.use_norm:
+            # same output form as GCNLayer (ReLU, no residual/LayerNorm) so the
+            # ASGCN-style dot-product readout sees features on the same scale
+            return F.relu(self.out(msg))
         return self.norm(F.elu(self.out(msg)) + self.res(h))
 
 
@@ -102,7 +109,7 @@ class GloveGraphModel(nn.Module):
         if kind == "gcn":
             self.gnn = nn.ModuleList([GCNLayer(d, d) for _ in range(layers)])
         elif kind in ("gat", "rgat"):
-            self.gnn = nn.ModuleList([GATLayer(d, d, heads, n_rel if kind == "rgat" else 0, 0.1)
+            self.gnn = nn.ModuleList([GATLayer(d, d, heads, n_rel if kind == "rgat" else 0, 0.1, norm=False)
                                       for _ in range(layers)])
         elif kind == "lstm":
             self.gnn = nn.ModuleList()
@@ -122,8 +129,8 @@ class GloveGraphModel(nn.Module):
         for layer in self.gnn:
             if self.kind == "gcn":
                 g = layer(g * b["pw"].unsqueeze(-1), b["adj"])
-            else:
-                g = layer(g, b["adj"], b.get("rel"))
+            else:  # same ASGCN position weighting as the GCN for a fair comparison
+                g = layer(g * b["pw"].unsqueeze(-1), b["adj"], b.get("rel"))
             g = self.gnn_drop(g)
         # aspect-specific readout (ASGCN): aspect vector from the graph output
         # attends over the BiLSTM states of the whole sentence

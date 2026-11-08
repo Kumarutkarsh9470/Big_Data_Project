@@ -33,9 +33,9 @@ def grid(name):
                   "rest14": ["yelp"], "yelp": ["rest14"]}.get(ds, [])
             J.append(job(ds, m, s, eval_on=ev))
     elif name == "ablation":
-        for ds, m, g, s in itertools.product(["rest14", "lap14", "mams"], ["gcn", "gat"], ["seq", "random", "full"], SEEDS):
+        for ds, m, g, s in itertools.product(["rest14", "lap14"], ["gcn", "gat"], ["seq", "random", "full"], SEEDS):
             J.append(job(ds, m, s, graph=g))
-        for ds, m, L, s in itertools.product(["rest14", "lap14"], ["gcn", "gat"], [1, 3, 4], SEEDS):
+        for ds, m, L, s in itertools.product(["rest14", "lap14"], ["gcn"], [1, 3, 4], SEEDS):
             J.append(job(ds, m, s, layers=L))
     elif name == "plm":
         for ds in ["yelp", "lap14", "rest14", "amazon23", "mams"]:
