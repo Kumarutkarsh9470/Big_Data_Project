@@ -23,6 +23,7 @@
 | MAMS                                            | GAT (dep. tree)          | GCN (dep. tree)          |           -0.52 |     0.8438 |
 | MAMS                                            | RoBERTa (fine-tuned)     | R-GAT (dep. tree + rel.) |            4.99 |     0      |
 | MAMS                                            | RoBERTa+R-GAT            | RoBERTa (fine-tuned)     |           -0.22 |     0.6364 |
+| MAMS                                            | RoBERTa+GCN              | RoBERTa (fine-tuned)     |           -0.37 |     0.7008 |
 | Yelp                                            | GCN (dep. tree)          | BiLSTM+Att (no graph)    |            0.41 |     0.4144 |
 | Yelp                                            | GAT (dep. tree)          | BiLSTM+Att (no graph)    |           -0.95 |     0.7368 |
 | Yelp                                            | R-GAT (dep. tree + rel.) | BiLSTM+Att (no graph)    |            0.14 |     0.4652 |

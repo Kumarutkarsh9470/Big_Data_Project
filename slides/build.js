@@ -284,7 +284,7 @@ async function icon(Comp, hex, size = 256) {
     txt(s, n, { x: 9.7, y: y + 0.1, w: 2.9, h: 0.65, fontSize: 32, bold: true, color: col, fontFace: THEME.headFontFace });
     txt(s, l, { x: 9.7, y: y + 0.78, w: 2.85, h: 0.8, fontSize: 13 });
   });
-  s.addNotes("Main results. RoBERTa beats every GloVe model by five to eight points on the benchmarks. The four GloVe models are within 1.8 points of each other, which is the size of the seed variation, and none of the graph-versus-BiLSTM differences is significant. On top of RoBERTa the graph adds little in-domain, but on the Amazon gold set the hybrids gain four to five points. Yelp is the odd one out: plain RoBERTa scores below the GloVe models because with only 49 neutral training examples it never predicts neutral; the hybrids recover. MAMS has no RoBERTa+GCN run, so the chart shows the R-GAT hybrid.");
+  s.addNotes("Main results. RoBERTa beats every GloVe model by five to eight points on the benchmarks. The four GloVe models are within 1.8 points of each other, which is the size of the seed variation, and none of the graph-versus-BiLSTM differences is significant. On top of RoBERTa the graph adds little in-domain, but on the Amazon gold set the hybrids gain four to five points. Yelp is the odd one out: plain RoBERTa scores below the GloVe models because with only 49 neutral training examples it never predicts neutral; the hybrids recover.");
 
   // 8. Ablation
   s = pres.addSlide({ masterName: "CONTENT", sectionTitle: "Results" });
@@ -331,7 +331,7 @@ async function icon(Comp, hex, size = 256) {
   const pts = [
     [ICON.check, C.accent1, "Holds per seed: RoBERTa 42 / 46 vs hybrids 57 to 65 (Lap14); 44 / 50 vs 59 to 65 (Amz-Gold)"],
     [ICON.warn, C.accent3, "Rest14: small gain that depends on the seed (one RoBERTa seed scores 70.2)"],
-    [ICON.cross, C.accent2, "MAMS: no gain (83.4 vs 83.2). Its 11k mixed training sentences teach RoBERTa the links itself"],
+    [ICON.cross, C.accent2, "MAMS: no gain (83.4 vs 83.1 / 83.2). Its 11k mixed training sentences teach RoBERTa the links itself"],
   ];
   pts.forEach(([ic, col, t], i) => {
     const y = 3.45 + i * 1.15;

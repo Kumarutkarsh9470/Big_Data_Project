@@ -40,20 +40,20 @@
 
 | group                                             |    n |   BiLSTM+Att (no graph) |   GCN (dep. tree) |   GAT (dep. tree) |   R-GAT (dep. tree + rel.) |   RoBERTa (fine-tuned) |   RoBERTa+GCN |   RoBERTa+R-GAT |
 |:--------------------------------------------------|-----:|------------------------:|------------------:|------------------:|---------------------------:|-----------------------:|--------------:|----------------:|
-| all                                               | 1336 |                    78   |              78.4 |              77.9 |                       78.5 |                   83.5 |           nan |            83.2 |
-| single-aspect sentence                            |    2 |                   100   |             100   |             100   |                      100   |                  100   |           nan |           100   |
-| multi-aspect sentence                             | 1334 |                    77.9 |              78.4 |              77.9 |                       78.4 |                   83.4 |           nan |            83.2 |
-| mixed-polarity sentence                           | 1334 |                    77.9 |              78.4 |              77.9 |                       78.4 |                   83.4 |           nan |            83.2 |
-| contrast marker (but/however/...)                 |  347 |                    78.4 |              77.9 |              77   |                       78.8 |                   83.3 |           nan |            83.6 |
-| length <= 15                                      |  127 |                    78.2 |              81.4 |              81.4 |                       80.3 |                   82.7 |           nan |            85   |
-| length 16-30                                      |  731 |                    78   |              78.6 |              77.7 |                       78.3 |                   85.5 |           nan |            85.4 |
-| length > 30                                       |  478 |                    77.8 |              77.5 |              77.3 |                       78.2 |                   80.5 |           nan |            79.5 |
-| opinion word: tree dist 1                         |  165 |                    74.9 |              79.2 |              76.2 |                       76   |                   85.5 |           nan |            87.9 |
-| opinion word: tree dist 2                         |  235 |                    74.5 |              77.3 |              76   |                       77.3 |                   83.4 |           nan |            82.1 |
-| opinion word: tree dist >= 3                      |  597 |                    77.4 |              77.2 |              77   |                       77.1 |                   80.9 |           nan |            81.1 |
-| linear dist >= 4                                  |  627 |                    75.6 |              76.5 |              75.5 |                       75.9 |                   80.7 |           nan |            80.9 |
-| linear >> tree (lin - tree >= 3)                  |  441 |                    74.7 |              77.5 |              76.3 |                       76.3 |                   80   |           nan |            80.7 |
-| distractor (lin-closest opinion not tree-closest) |   97 |                    78.4 |              77.7 |              79.7 |                       80.8 |                   87.6 |           nan |            86.6 |
+| all                                               | 1336 |                    78   |              78.4 |              77.9 |                       78.5 |                   83.5 |          83.1 |            83.2 |
+| single-aspect sentence                            |    2 |                   100   |             100   |             100   |                      100   |                  100   |         100   |           100   |
+| multi-aspect sentence                             | 1334 |                    77.9 |              78.4 |              77.9 |                       78.4 |                   83.4 |          83.1 |            83.2 |
+| mixed-polarity sentence                           | 1334 |                    77.9 |              78.4 |              77.9 |                       78.4 |                   83.4 |          83.1 |            83.2 |
+| contrast marker (but/however/...)                 |  347 |                    78.4 |              77.9 |              77   |                       78.8 |                   83.3 |          83.3 |            83.6 |
+| length <= 15                                      |  127 |                    78.2 |              81.4 |              81.4 |                       80.3 |                   82.7 |          85   |            85   |
+| length 16-30                                      |  731 |                    78   |              78.6 |              77.7 |                       78.3 |                   85.5 |          83.9 |            85.4 |
+| length > 30                                       |  478 |                    77.8 |              77.5 |              77.3 |                       78.2 |                   80.5 |          81.4 |            79.5 |
+| opinion word: tree dist 1                         |  165 |                    74.9 |              79.2 |              76.2 |                       76   |                   85.5 |          86.7 |            87.9 |
+| opinion word: tree dist 2                         |  235 |                    74.5 |              77.3 |              76   |                       77.3 |                   83.4 |          83   |            82.1 |
+| opinion word: tree dist >= 3                      |  597 |                    77.4 |              77.2 |              77   |                       77.1 |                   80.9 |          80.1 |            81.1 |
+| linear dist >= 4                                  |  627 |                    75.6 |              76.5 |              75.5 |                       75.9 |                   80.7 |          80.2 |            80.9 |
+| linear >> tree (lin - tree >= 3)                  |  441 |                    74.7 |              77.5 |              76.3 |                       76.3 |                   80   |          79.4 |            80.7 |
+| distractor (lin-closest opinion not tree-closest) |   97 |                    78.4 |              77.7 |              79.7 |                       80.8 |                   87.6 |          83.5 |            86.6 |
 
 ### Yelp: accuracy (%) by subgroup (seed-averaged)
 

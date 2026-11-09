@@ -5,5 +5,5 @@
 | GAT (dep. tree)          |                    2.2 |                     793.8 |                         670.4 |
 | R-GAT (dep. tree + rel.) |                    2.3 |                     890.1 |                         682   |
 | RoBERTa (fine-tuned)     |                  124.1 |                    1039   |                          72.8 |
-| RoBERTa+GCN              |                  124.6 |                     735.5 |                          73.7 |
+| RoBERTa+GCN              |                  124.6 |                    1085.9 |                          69.5 |
 | RoBERTa+R-GAT            |                  125   |                    1001.1 |                          71.5 |

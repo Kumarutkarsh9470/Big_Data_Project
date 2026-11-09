@@ -112,7 +112,7 @@ Two details of the GAT turned out to matter. Our first version followed the atte
 \textbf{RoBERTa+GCN} and \textbf{RoBERTa+R-GAT} take the last-layer state of the first sub-word of every word, project it to 384 dimensions, run two GCN or R-GAT layers over the parse, mean-pool the aspect nodes, and classify the concatenation of this vector with the \texttt{<s>} state.
 
 \subsection{Training protocol}
-GloVe models are trained with Adam (learning rate $10^{-3}$, weight decay $10^{-5}$, batch size 32, dropout 0.5 on embeddings and 0.3 after each graph layer) for up to 30 epochs, with early stopping after 8 epochs without improvement. Transformer models use AdamW \citep{loshchilov2019decoupled} with learning rate $2 \cdot 10^{-5}$ for the encoder and $10^{-3}$ for the new layers, batch size 16, 10\% linear warm-up, and four epochs (three on MAMS). In all cases the checkpoint with the highest sum of development accuracy and macro-F1 is evaluated once on the test set. We never select on test data; many published ABSC numbers report the best test epoch, which explains part of the gap between our numbers and the original papers (ASGCN reports 80.8\% on Rest14; our GCN reaches 79.1\%). GloVe models were run with three seeds. Because of the cost of CPU fine-tuning, transformer models were run with two seeds on Rest14, Lap14 and Yelp and with one seed on MAMS and \dist; RoBERTa+GCN was not run on MAMS. Significance is assessed with a paired bootstrap over test instances \citep{berg-kirkpatrick-etal-2012-empirical} (5,000 resamples), using each instance's correctness averaged over seeds. All experiments ran on a 4-core CPU, 137 training runs in total.
+GloVe models are trained with Adam (learning rate $10^{-3}$, weight decay $10^{-5}$, batch size 32, dropout 0.5 on embeddings and 0.3 after each graph layer) for up to 30 epochs, with early stopping after 8 epochs without improvement. Transformer models use AdamW \citep{loshchilov2019decoupled} with learning rate $2 \cdot 10^{-5}$ for the encoder and $10^{-3}$ for the new layers, batch size 16, 10\% linear warm-up, and four epochs (three on MAMS). In all cases the checkpoint with the highest sum of development accuracy and macro-F1 is evaluated once on the test set. We never select on test data; many published ABSC numbers report the best test epoch, which explains part of the gap between our numbers and the original papers (ASGCN reports 80.8\% on Rest14; our GCN reaches 79.1\%). GloVe models were run with three seeds. Because of the cost of CPU fine-tuning, transformer models were run with two seeds on Rest14, Lap14 and Yelp and with one seed on MAMS and \dist. Significance is assessed with a paired bootstrap over test instances \citep{berg-kirkpatrick-etal-2012-empirical} (5,000 resamples), using each instance's correctness averaged over seeds. All experiments ran on a 4-core CPU, 137 training runs in total.
 
 \section{Results}
 
@@ -132,7 +132,7 @@ GAT & 78.51 / 67.36 & 68.76 / 62.28 & 77.92 / 77.08 & 83.40 / 61.98 & 95.26 / 94
 R-GAT & 79.14 / 69.13 & 70.48 / 64.78 & 78.47 / 77.38 & 84.49 / 63.87 & 94.44 / 93.99 & 46.07 / 46.19 \\
 \midrule
 RoBERTa & 84.02 / 74.69 & 77.66 / 72.76 & \textbf{83.46} / \textbf{83.08} & 81.02 / 51.92 & 95.69 / 95.34 & 59.11 / 57.32 \\
-RoBERTa+GCN & \textbf{84.42} / \textbf{75.98} & \textbf{78.68} / \textbf{74.20} & n/a & \textbf{84.69} / 55.18 & \textbf{96.27} / \textbf{96.09} & \textbf{64.22} / \textbf{63.50} \\
+RoBERTa+GCN & \textbf{84.42} / \textbf{75.98} & \textbf{78.68} / \textbf{74.20} & 83.08 / 82.68 & \textbf{84.69} / 55.18 & \textbf{96.27} / \textbf{96.09} & \textbf{64.22} / \textbf{63.50} \\
 RoBERTa+R-GAT & 84.11 / 75.57 & 78.13 / 73.94 & 83.23 / 82.83 & 83.67 / 57.64 & 95.45 / 95.19 & 63.11 / 61.86 \\
 \bottomrule
 \end{tabular}
@@ -147,7 +147,7 @@ Table~\ref{tab:main} gives the main results.
 
 \textit{On top of a GloVe BiLSTM, the dependency graph gives no reliable gain.} The four GloVe models differ by at most 1.8 points on any benchmark, which is of the same size as the seed variation. None of the GCN or R-GAT versus BiLSTM differences on the human-labelled sets is significant (the smallest $p$ is 0.25). R-GAT is better than GAT on every human-labelled set, by 0.6 to 2.2 points, so the relation labels do carry some information, but not enough to beat the model without a graph.
 
-\textit{On top of RoBERTa, the graph gives small average gains in-domain.} RoBERTa+GCN is 0.4 points better than RoBERTa on Rest14 and 1.0 point better on Lap14 ($p = 0.27$ and $0.18$), and RoBERTa+R-GAT is 0.2 points worse on MAMS. The picture changes on Yelp and on \gold. On Yelp, plain RoBERTa is the weakest model: with 727 training instances and only 49 neutral ones it never predicts the neutral class, and its accuracy (81.0) is below the GloVe models. The hybrids recover (84.7 and 83.7, $p < 0.001$ and $p = 0.03$). On \gold, RoBERTa+GCN gains 5.1 points over RoBERTa ($p = 0.02$) and RoBERTa+R-GAT 4.0 points ($p = 0.07$). Section~\ref{sec:fine} shows where these gains come from.
+\textit{On top of RoBERTa, the graph gives small average gains in-domain.} RoBERTa+GCN is 0.4 points better than RoBERTa on Rest14 and 1.0 point better on Lap14 ($p = 0.27$ and $0.18$), and on MAMS both hybrids are slightly worse than RoBERTa (by 0.4 points for GCN and 0.2 for R-GAT, $p = 0.70$ and $0.64$). The picture changes on Yelp and on \gold. On Yelp, plain RoBERTa is the weakest model: with 727 training instances and only 49 neutral ones it never predicts the neutral class, and its accuracy (81.0) is below the GloVe models. The hybrids recover (84.7 and 83.7, $p < 0.001$ and $p = 0.03$). On \gold, RoBERTa+GCN gains 5.1 points over RoBERTa ($p = 0.02$) and RoBERTa+R-GAT 4.0 points ($p = 0.07$). Section~\ref{sec:fine} shows where these gains come from.
 
 \subsection{Does the graph need to be syntactic?}
 \label{sec:ablation}
@@ -202,7 +202,7 @@ Our reading is that with a BiLSTM encoder, the useful part of the inductive bias
 Rest14 & 218 & 63.6 & 67.2 & 68.8 & \textbf{69.7} \\
 Lap14 & 97 & 58.4 & 44.3 & 59.8 & \textbf{61.9} \\
 Yelp & 22 & \textbf{77.3} & 54.5 & 61.4 & 63.6 \\
-MAMS & 1334 & 77.9 & \textbf{83.4} & n/a & 83.2 \\
+MAMS & 1334 & 77.9 & \textbf{83.4} & 83.1 & 83.2 \\
 Lap14$\rightarrow$\gold & 93 & 49.5 & 46.8 & 59.1 & \textbf{62.4} \\
 \midrule
 \multicolumn{6}{l}{\textit{contrast marker in sentence}} \\
@@ -221,7 +221,7 @@ Lap14$\rightarrow$\gold & 96 & 54.9 & 54.2 & 62.0 & \textbf{64.1} \\
 
 Averages hide where the models differ. Table~\ref{tab:fine} splits the test sets into subsets that should need syntax: instances from sentences whose aspects have different polarities, sentences with a contrast marker, and instances whose nearest opinion word (any word in the VADER lexicon with $|$valence$|\geq 1$) is three or more dependency arcs away.
 
-On mixed-polarity sentences, adding a dependency GNN to RoBERTa raises accuracy from 44.3 to 59.8 (GCN) and 61.9 (R-GAT) on Lap14, and from 46.8 to 59.1 and 62.4 on \gold. These are the largest effects in the study, and they are not a seed artefact: on Lap14, plain RoBERTa scores 42.3 and 46.4 on this subset with its two seeds, while the hybrids score between 56.7 and 64.9; on \gold{} the ranges are 44.1 to 49.5 and 59.1 to 64.5. On Rest14 the subset gain is small and depends on the seed (one RoBERTa seed scores 70.2, above RoBERTa+GCN). On MAMS, where nearly all training sentences are mixed, RoBERTa alone is as good as the hybrid. We interpret this as a data-quantity effect. Rest14 has more than twice as many mixed-polarity training instances as Lap14 (812 vs.\ 385), and MAMS has over eleven thousand, so the transformer has enough examples to learn which opinion belongs to which aspect. With fewer such examples, or under a domain shift as with \gold, the parse supplies the missing prior.
+On mixed-polarity sentences, adding a dependency GNN to RoBERTa raises accuracy from 44.3 to 59.8 (GCN) and 61.9 (R-GAT) on Lap14, and from 46.8 to 59.1 and 62.4 on \gold. These are the largest effects in the study, and they are not a seed artefact: on Lap14, plain RoBERTa scores 42.3 and 46.4 on this subset with its two seeds, while the hybrids score between 56.7 and 64.9; on \gold{} the ranges are 44.1 to 49.5 and 59.1 to 64.5. On Rest14 the subset gain is small and depends on the seed (one RoBERTa seed scores 70.2, above RoBERTa+GCN). On MAMS, where nearly all training sentences are mixed, RoBERTa alone is as good as both hybrids (83.4 vs.\ 83.1 and 83.2). We interpret this as a data-quantity effect. Rest14 has more than twice as many mixed-polarity training instances as Lap14 (812 vs.\ 385), and MAMS has over eleven thousand, so the transformer has enough examples to learn which opinion belongs to which aspect. With fewer such examples, or under a domain shift as with \gold, the parse supplies the missing prior.
 
 The GloVe graph models do not show the same benefit. On Lap14 mixed-polarity sentences they are 6 to 12 points \emph{worse} than the BiLSTM, and on \gold{} they are 4 to 7 points worse. Their readout attends over BiLSTM states using the graph-smoothed aspect vector as a query, and in the examples we inspected this query was often dominated by the strongest opinion word of the sentence, whichever aspect it belonged to. The demo in the released notebook shows a typical case: for ``\textit{The sound quality is amazing, although the ear cushions get uncomfortable after an hour}'', the GloVe R-GAT used in Section~\ref{sec:scale} puts 99\% of its attention for \textit{ear cushions} on \textit{amazing} and predicts positive, while RoBERTa+GCN predicts positive and negative correctly.
 
@@ -336,9 +336,9 @@ BiLSTM+Att & 0.05 & 0.71 & 0.23 & 2.36 \\
 GCN & 1.32 & 2.28 & 0.46 & 1.18 \\
 GAT & 0.72 & 1.60 & 1.01 & 0.47 \\
 R-GAT & 0.68 & 0.89 & 0.58 & 0.41 \\
-RoBERTa & 1.26 & 0.78 & n/a & 0.29 \\
-RoBERTa+GCN & 0.06 & 0.44 & n/a & 3.75 \\
-RoBERTa+R-GAT & 0.00 & 0.33 & n/a & 1.73 \\
+RoBERTa & 1.26 & 0.78 & 1 seed & 0.29 \\
+RoBERTa+GCN & 0.06 & 0.44 & 1 seed & 3.75 \\
+RoBERTa+R-GAT & 0.00 & 0.33 & 1 seed & 1.73 \\
 \bottomrule
 \end{tabular}
 \end{adjustbox}

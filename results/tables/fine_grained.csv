@@ -27,20 +27,20 @@ Lap14,opinion word: tree dist >= 3,152,61.8,61.4,59.0,61.0,71.4,70.4,72.4
 Lap14,linear dist >= 4,169,63.3,63.7,62.5,65.7,74.0,72.5,75.1
 Lap14,linear >> tree (lin - tree >= 3),108,66.4,64.2,61.7,66.4,74.1,72.7,74.5
 Lap14,distractor (lin-closest opinion not tree-closest),28,73.8,70.2,63.1,64.3,66.1,73.2,73.2
-MAMS,all,1336,78.0,78.4,77.9,78.5,83.5,,83.2
-MAMS,single-aspect sentence,2,100.0,100.0,100.0,100.0,100.0,,100.0
-MAMS,multi-aspect sentence,1334,77.9,78.4,77.9,78.4,83.4,,83.2
-MAMS,mixed-polarity sentence,1334,77.9,78.4,77.9,78.4,83.4,,83.2
-MAMS,contrast marker (but/however/...),347,78.4,77.9,77.0,78.8,83.3,,83.6
-MAMS,length <= 15,127,78.2,81.4,81.4,80.3,82.7,,85.0
-MAMS,length 16-30,731,78.0,78.6,77.7,78.3,85.5,,85.4
-MAMS,length > 30,478,77.8,77.5,77.3,78.2,80.5,,79.5
-MAMS,opinion word: tree dist 1,165,74.9,79.2,76.2,76.0,85.5,,87.9
-MAMS,opinion word: tree dist 2,235,74.5,77.3,76.0,77.3,83.4,,82.1
-MAMS,opinion word: tree dist >= 3,597,77.4,77.2,77.0,77.1,80.9,,81.1
-MAMS,linear dist >= 4,627,75.6,76.5,75.5,75.9,80.7,,80.9
-MAMS,linear >> tree (lin - tree >= 3),441,74.7,77.5,76.3,76.3,80.0,,80.7
-MAMS,distractor (lin-closest opinion not tree-closest),97,78.4,77.7,79.7,80.8,87.6,,86.6
+MAMS,all,1336,78.0,78.4,77.9,78.5,83.5,83.1,83.2
+MAMS,single-aspect sentence,2,100.0,100.0,100.0,100.0,100.0,100.0,100.0
+MAMS,multi-aspect sentence,1334,77.9,78.4,77.9,78.4,83.4,83.1,83.2
+MAMS,mixed-polarity sentence,1334,77.9,78.4,77.9,78.4,83.4,83.1,83.2
+MAMS,contrast marker (but/however/...),347,78.4,77.9,77.0,78.8,83.3,83.3,83.6
+MAMS,length <= 15,127,78.2,81.4,81.4,80.3,82.7,85.0,85.0
+MAMS,length 16-30,731,78.0,78.6,77.7,78.3,85.5,83.9,85.4
+MAMS,length > 30,478,77.8,77.5,77.3,78.2,80.5,81.4,79.5
+MAMS,opinion word: tree dist 1,165,74.9,79.2,76.2,76.0,85.5,86.7,87.9
+MAMS,opinion word: tree dist 2,235,74.5,77.3,76.0,77.3,83.4,83.0,82.1
+MAMS,opinion word: tree dist >= 3,597,77.4,77.2,77.0,77.1,80.9,80.1,81.1
+MAMS,linear dist >= 4,627,75.6,76.5,75.5,75.9,80.7,80.2,80.9
+MAMS,linear >> tree (lin - tree >= 3),441,74.7,77.5,76.3,76.3,80.0,79.4,80.7
+MAMS,distractor (lin-closest opinion not tree-closest),97,78.4,77.7,79.7,80.8,87.6,83.5,86.6
 Yelp,all,245,84.4,84.8,83.4,84.5,81.0,84.7,83.7
 Yelp,single-aspect sentence,136,81.1,83.3,80.9,81.6,78.7,82.7,80.5
 Yelp,multi-aspect sentence,109,88.4,86.5,86.5,88.1,83.9,87.2,87.6
