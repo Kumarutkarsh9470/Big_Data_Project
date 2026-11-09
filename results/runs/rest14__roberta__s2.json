@@ -1,0 +1,77 @@
+{
+ "name": "rest14__roberta__s2",
+ "args": {
+  "dataset": "rest14",
+  "model": "roberta",
+  "graph": "dep",
+  "layers": 2,
+  "heads": 4,
+  "hidden": 300,
+  "dropout": 0.5,
+  "no_pos": false,
+  "seed": 2,
+  "epochs": 4,
+  "patience": 8,
+  "bs": 16,
+  "lr": 2e-05,
+  "plm": "/home/user/Big_Data_Course_Project/resources/roberta-base-spacy",
+  "max_subwords": 128,
+  "threads": 4,
+  "eval_on": [
+   "yelp"
+  ],
+  "tag": "",
+  "save_model": null,
+  "out": "/home/user/Big_Data_Course_Project/results/runs"
+ },
+ "history": [
+  {
+   "epoch": 1,
+   "loss": 0.8460477839372662,
+   "dev_acc": 0.7265193370165746,
+   "dev_f1": 0.6272981659115505
+  },
+  {
+   "epoch": 2,
+   "loss": 0.5483948931015353,
+   "dev_acc": 0.7458563535911602,
+   "dev_f1": 0.6688071904272023
+  },
+  {
+   "epoch": 3,
+   "loss": 0.37908391723350765,
+   "dev_acc": 0.787292817679558,
+   "dev_f1": 0.712479502712033
+  },
+  {
+   "epoch": 4,
+   "loss": 0.2731938520704642,
+   "dev_acc": 0.7817679558011049,
+   "dev_f1": 0.7166828186191433
+  }
+ ],
+ "train_time_s": 910.1260168552399,
+ "n_params_trainable": 124057347,
+ "n_params_total": 124057347,
+ "glove_coverage": null,
+ "test": {
+  "rest14": {
+   "acc": 0.83125,
+   "f1": 0.7246905564890248,
+   "n": 1120,
+   "infer_time_s": 15.5292067527771,
+   "throughput": 72.12216424381816
+  },
+  "yelp": {
+   "acc": 0.8734693877551021,
+   "f1": 0.6372378393491792,
+   "n": 245,
+   "infer_time_s": 3.1771399974823,
+   "throughput": 77.11337876018946
+  }
+ },
+ "dev": {
+  "acc": 0.787292817679558,
+  "f1": 0.712479502712033
+ }
+}

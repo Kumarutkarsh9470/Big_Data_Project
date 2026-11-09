@@ -80,7 +80,7 @@ print('\\ntree distance from "battery life":', dict(zip([t.text for t in doc], t
 fig, ax = plt.subplots(figsize=(5, 5)); ax.imshow(A, cmap='Blues')
 ax.set_xticks(range(len(doc))); ax.set_xticklabels([t.text for t in doc], rotation=90)
 ax.set_yticks(range(len(doc))); ax.set_yticklabels([t.text for t in doc]); ax.set_title('dependency adjacency (+ self loops)'); plt.show()""")
-md("""In the linear order, *great* and *dim* are both exactly 3 tokens away from *screen*, so a purely sequential model has no positional cue for which opinion belongs to it. In the tree, *dim* is 2 hops from *screen* and *great* is 3 hops away (through the `conj` edge), while from *battery life* *great* is 2 hops away and *dim* 4. The GNNs propagate information only along these edges, so the opinion word that is *syntactically* attached to an aspect dominates its representation.
+md("""In the linear order, *great* and *dim* are both exactly 3 tokens away from *screen*, so a purely sequential model has no positional cue for which opinion belongs to it. In the tree, *dim* is 2 hops from *screen* and *great* is 3 hops away (through the `conj` edge), while from *battery life* *great* is 2 hops away and *dim* 3. The GNNs propagate information only along these edges, so the opinion word that is *syntactically* attached to an aspect dominates its representation.
 
 **Models** (`src/absa/models.py`):
 * **BiLSTM+Att** – same encoder/readout as the GNNs, no graph (ablation baseline)
@@ -106,12 +106,12 @@ code("""for f in sorted(glob.glob(f'{ROOT}/results/figures/distance_*.png')): di
 md("## 7. Efficiency (CPU)")
 code("show_md('results/tables/efficiency.md')")
 
-md("## 8. Demo: a trained dependency R-GAT on new sentences")
+md("## 8. Demo: trained models on new sentences\nFirst the GloVe R-GAT (trained on Lap14 + distant Amazon23) with its aspect-attention weights, then the RoBERTa+GCN hybrid (trained on Lap14).")
 code("""import torch, argparse
 from absa.models import GloveGraphModel
 from absa.train import featurise, collate, DEPS
 from absa.data import LABELS
-ck = f'{ROOT}/results/models/amazon23_rgat.pt'
+ck = f'{ROOT}/results/models/lap14-amazon23_rgat.pt'
 if os.path.exists(ck):
     ckpt = torch.load(ck, weights_only=False); a = argparse.Namespace(**ckpt['args'])
     model = GloveGraphModel(ckpt['emb'], len(DEPS), kind=a.model, layers=a.layers, heads=a.heads,
@@ -138,7 +138,30 @@ if os.path.exists(ck):
         for asp in asps: analyse(s, asp)
         print()
 else:
-    print('checkpoint not found; train it with: python -m absa.train --dataset amazon23 --model rgat --save-model results/models/amazon23_rgat.pt')""")
+    print('checkpoint not found; train it with: python -m absa.train --dataset lap14+amazon23 --model rgat --save-model ../results/models/lap14-amazon23_rgat.pt')""")
+
+code("""ck2 = f'{ROOT}/results/models/lap14_roberta-gcn.pt'
+if os.path.exists(ck2):
+    from transformers import AutoTokenizer
+    from absa.models import RobertaABSA
+    c2 = torch.load(ck2, weights_only=False); a2 = argparse.Namespace(**c2['args'])
+    tok = AutoTokenizer.from_pretrained(a2.plm)
+    m2 = RobertaABSA(a2.plm, kind=a2.model, n_rel=len(DEPS), layers=a2.layers, heads=a2.heads)
+    m2.load_state_dict(c2['state_dict']); m2.eval()
+    def analyse2(sentence, aspect):
+        doc = nlp(sentence); i = sentence.lower().index(aspect.lower())
+        sp = doc.char_span(i, i + len(aspect), alignment_mode='expand')
+        ex = {'tokens': [t.text for t in doc], 'heads': [t.head.i for t in doc], 'deps': [t.dep_ for t in doc],
+              'pos': [t.pos_ for t in doc], 'from': sp.start, 'to': sp.end, 'aspect': aspect, 'label': None}
+        with torch.no_grad(): p = torch.softmax(m2(collate(featurise([ex], a2, None, tok), torch.device('cpu'))), -1)[0].numpy()
+        print(f'{aspect!r:18s} -> {LABELS[p.argmax()]:8s} {np.round(p, 2)}')
+    for s, asps in [('The battery life is great but the screen is too dim for outdoor use.', ['battery life', 'screen']),
+                    ('The sound quality is amazing, although the ear cushions get uncomfortable after an hour.', ['sound quality', 'ear cushions']),
+                    ('I bought this cable for my laptop and it stopped working after two days.', ['cable', 'laptop']),
+                    ('Customer service never answered, but the keyboard itself works fine.', ['Customer service', 'keyboard'])]:
+        print(s)
+        for asp in asps: analyse2(s, asp)
+        print()""")
 
 md("## 9. Corpus-scale aspect mining on Amazon Reviews 2023 (100k reviews)")
 code("""p = f'{ROOT}/results/amazon_mining/summary.json'
@@ -146,6 +169,15 @@ if os.path.exists(p):
     print(json.dumps(json.load(open(p)), indent=1))
     display(Image(f'{ROOT}/results/amazon_mining/top_aspects.png')); display(Image(f'{ROOT}/results/amazon_mining/polarity_by_star.png'))
     display(pd.read_csv(f'{ROOT}/results/amazon_mining/aspect_summary.csv').head(25))""")
+md("""### Accuracy vs. throughput at corpus scale
+The same pipeline with the RoBERTa+GCN hybrid on the first 10k reviews: about 28x slower on CPU, but far more accurate on the gold set (≈64 % vs ≈49 %). Agreement between the two models on identical mentions is reported below.""")
+code("""p = f'{ROOT}/results/amazon_mining_roberta_gcn_10k/summary.json'
+if os.path.exists(p):
+    r = json.load(open(p)); g = json.load(open(f'{ROOT}/results/amazon_mining/summary.json'))
+    display(pd.DataFrame({'GloVe R-GAT (100k reviews)': [g['n_mentions'], round(g['timing']['mentions_per_s_inference']), round(g['timing']['reviews_per_s_end_to_end'], 1), g['spearman_review_aspect_sentiment_vs_stars']['rho']],
+                          'RoBERTa+GCN (10k reviews)': [r['n_mentions'], round(r['timing']['mentions_per_s_inference']), round(r['timing']['reviews_per_s_end_to_end'], 1), r['spearman_review_aspect_sentiment_vs_stars']['rho']]},
+                         index=['aspect mentions', 'mentions/s (inference)', 'reviews/s end-to-end', 'Spearman(aspect sentiment, stars)']))
+    print('agreement of the two models on the same 10k reviews:', r.get('agreement_with_other_model'))""")
 
 nb["cells"] = C
 nb.metadata["kernelspec"] = {"name": "python3", "display_name": "Python 3", "language": "python"}

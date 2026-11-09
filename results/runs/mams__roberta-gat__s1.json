@@ -1,0 +1,62 @@
+{
+ "name": "mams__roberta-gat__s1",
+ "args": {
+  "dataset": "mams",
+  "model": "roberta-gat",
+  "graph": "dep",
+  "layers": 2,
+  "heads": 4,
+  "hidden": 300,
+  "dropout": 0.5,
+  "no_pos": false,
+  "seed": 1,
+  "epochs": 3,
+  "patience": 8,
+  "bs": 16,
+  "lr": 2e-05,
+  "plm": "/home/user/Big_Data_Course_Project/resources/roberta-base-spacy",
+  "max_subwords": 128,
+  "threads": 4,
+  "eval_on": [],
+  "tag": "",
+  "save_model": null,
+  "out": "/home/user/Big_Data_Course_Project/results/runs"
+ },
+ "history": [
+  {
+   "epoch": 1,
+   "loss": 0.6926776937076023,
+   "dev_acc": 0.786036036036036,
+   "dev_f1": 0.7841388495623138
+  },
+  {
+   "epoch": 2,
+   "loss": 0.403150667548153,
+   "dev_acc": 0.8378378378378378,
+   "dev_f1": 0.8335954243187506
+  },
+  {
+   "epoch": 3,
+   "loss": 0.26115683059231576,
+   "dev_acc": 0.8340840840840841,
+   "dev_f1": 0.8291478165354139
+  }
+ ],
+ "train_time_s": 2819.9399843215942,
+ "n_params_trainable": 124984707,
+ "n_params_total": 124984707,
+ "glove_coverage": null,
+ "test": {
+  "mams": {
+   "acc": 0.8323353293413174,
+   "f1": 0.8283211217202492,
+   "n": 1336,
+   "infer_time_s": 24.126553297042847,
+   "throughput": 55.374673023176975
+  }
+ },
+ "dev": {
+  "acc": 0.8378378378378378,
+  "f1": 0.8335954243187506
+ }
+}

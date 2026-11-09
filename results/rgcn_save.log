@@ -1,0 +1,6 @@
+Loading weights:   0%|          | 0/197 [00:00<?, ?it/s]Loading weights:  27%|██▋       | 54/197 [00:00<00:00, 524.47it/s]Loading weights:  54%|█████▍    | 107/197 [00:00<00:00, 441.71it/s]Loading weights: 100%|██████████| 197/197 [00:00<00:00, 658.74it/s]
+[lap14__roberta-gcn__s1] ep1 loss=0.9551 dev_acc=0.7296 dev_f1=0.6619
+[lap14__roberta-gcn__s1] ep2 loss=0.5393 dev_acc=0.7940 dev_f1=0.7373
+[lap14__roberta-gcn__s1] ep3 loss=0.3434 dev_acc=0.7768 dev_f1=0.7319
+[lap14__roberta-gcn__s1] ep4 loss=0.2322 dev_acc=0.8026 dev_f1=0.7677
+[lap14__roberta-gcn__s1] DONE lap14: acc=0.7900 f1=0.7428 amazon23_gold: acc=0.6622 f1=0.6528 | train 624s

@@ -1,0 +1,28 @@
+{
+ "n_reviews": 97487,
+ "n_sentences": 499928,
+ "n_mentions": 588417,
+ "n_distinct_aspects": 600,
+ "timing": {
+  "parse_s": 153.69331240653992,
+  "featurise_s": 16.16924548149109,
+  "inference_s": 266.5659017562866,
+  "mentions_per_s_inference": 2207.3978559267207,
+  "reviews_per_s_end_to_end": 223.37452529894676
+ },
+ "pred_distribution": {
+  "positive": 0.5057,
+  "negative": 0.273,
+  "neutral": 0.2213
+ },
+ "avg_star_by_predicted_polarity": {
+  "negative": 3.759,
+  "neutral": 4.106,
+  "positive": 4.442
+ },
+ "spearman_review_aspect_sentiment_vs_stars": {
+  "rho": 0.4116,
+  "p": 0.0,
+  "n_reviews": 80558
+ }
+}

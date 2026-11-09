@@ -45,8 +45,9 @@ def grid(name):
                 J.append(job(ds, m, 1, eval_on=ev, extra=["--epochs", "3" if ds == "mams" else "4"]))
     elif name == "plm-seeds":
         for ds in ["yelp", "lap14", "rest14"]:
+            ev = {"lap14": ["amazon23", "amazon23_gold"], "rest14": ["yelp"], "yelp": ["rest14"]}[ds]
             for m in ["roberta", "roberta-gat", "roberta-gcn"]:
-                J.append(job(ds, m, 2, extra=["--epochs", "4"]))
+                J.append(job(ds, m, 2, eval_on=ev, extra=["--epochs", "4"]))
     else:
         raise ValueError(name)
     return J

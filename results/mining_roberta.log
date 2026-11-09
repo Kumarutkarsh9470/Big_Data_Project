@@ -1,0 +1,48 @@
+reviews: 10000
+/usr/local/lib/python3.13/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+parsed 10000 reviews / 52804 sentences -> 65432 aspect mentions in 22s
+Loading weights:   0%|          | 0/197 [00:00<?, ?it/s]Loading weights: 100%|██████████| 197/197 [00:00<00:00, 3299.09it/s]
+{
+ "parse_s": 22.289886474609375,
+ "featurise_s": 23.30144238471985,
+ "inference_s": 846.2652606964111,
+ "mentions_per_s_inference": 77.31854660577052,
+ "reviews_per_s_end_to_end": 11.212565021223076
+}
+{
+ "n_reviews": 10000,
+ "n_sentences": 52804,
+ "n_mentions": 65432,
+ "n_distinct_aspects": 600,
+ "timing": {
+  "parse_s": 22.289886474609375,
+  "featurise_s": 23.30144238471985,
+  "inference_s": 846.2652606964111,
+  "mentions_per_s_inference": 77.31854660577052,
+  "reviews_per_s_end_to_end": 11.212565021223076
+ },
+ "pred_distribution": {
+  "positive": 0.4236,
+  "neutral": 0.3352,
+  "negative": 0.2412
+ },
+ "avg_star_by_predicted_polarity": {
+  "negative": 3.754,
+  "neutral": 4.35,
+  "positive": 4.538
+ },
+ "spearman_review_aspect_sentiment_vs_stars": {
+  "rho": 0.4816,
+  "p": 0.0,
+  "n_reviews": 8049
+ },
+ "agreement_with_other_model": 0.6182
+}
+pred  negative  neutral  positive
+star                             
+1        0.586    0.280     0.134
+2        0.471    0.322     0.207
+3        0.418    0.286     0.296
+4        0.278    0.327     0.395
+5        0.158    0.351     0.491

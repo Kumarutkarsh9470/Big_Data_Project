@@ -108,6 +108,9 @@ def cross_domain(df):
 
 def ablations(df):
     d = df[(df.train == df.test) & df.model.isin(["gcn", "gat"]) & (df.tag == "")]
+    abl_ds = set(d[(d.graph != "dep") | (d.layers != 2)].test)
+    d = d[d.test.isin(abl_ds)]
+    df = df[df.test.isin(abl_ds)]
     with open(os.path.join(TAB, "ablation.md"), "w") as f:
         g = d[d.layers == 2].copy()
         base = df[(df.train == df.test) & (df.model == "lstm")].copy()
@@ -200,8 +203,11 @@ def fine_grained(df, preds):
     models = [m for m in MODEL_ORDER if m in set(df.model)]
     rows, sig = [], []
     all_feats = []
-    for ds in ["rest14", "lap14", "mams", "yelp", "amazon23", "amazon23_gold"]:
-        train = "amazon23" if ds == "amazon23_gold" else ds
+    for ds, train in [("rest14", "rest14"), ("lap14", "lap14"), ("mams", "mams"), ("yelp", "yelp"),
+                      ("amazon23", "amazon23"), ("amazon23_gold", "amazon23"), ("amazon23_gold", "lap14")]:
+        label = DS_NAME[ds] if train in (ds, "amazon23") else f"{DS_NAME[ds]} ← trained on {DS_NAME[train]}"
+        if ds == "amazon23_gold" and train == "amazon23":
+            label = f"{DS_NAME[ds]} ← trained on {DS_NAME[train]}"
         exs = load_jsonl(data_file(ds))
         feats = pd.DataFrame([example_features(e, lex) for e in exs])
         corr = per_example_correct(preds, df, ds, models, train=train)
@@ -209,7 +215,7 @@ def fine_grained(df, preds):
             continue
         for m, c in corr.items():
             feats[m] = c
-        feats["dataset"] = ds
+        feats["dataset"] = ds if train in (ds, "amazon23") else f"{ds}_from_{train}"
         all_feats.append(feats)
         groups = {
             "all": np.ones(len(feats), bool),
@@ -229,7 +235,7 @@ def fine_grained(df, preds):
         }
         for gname, mask in groups.items():
             mask = np.asarray(mask, bool)
-            r = {"dataset": DS_NAME[ds], "group": gname, "n": int(mask.sum())}
+            r = {"dataset": label, "group": gname, "n": int(mask.sum())}
             for m in corr:
                 r[m] = corr[m][mask].mean() * 100 if mask.sum() else np.nan
             rows.append(r)
@@ -238,7 +244,7 @@ def fine_grained(df, preds):
                      ("roberta", "rgat"), ("roberta-gat", "roberta"), ("roberta-gcn", "roberta")]:
             if a in corr and b in corr:
                 d, p = paired_bootstrap(corr[a], corr[b])
-                sig.append({"dataset": DS_NAME[ds], "A": MODEL_NAME[a], "B": MODEL_NAME[b],
+                sig.append({"dataset": label, "A": MODEL_NAME[a], "B": MODEL_NAME[b],
                             "acc(A)-acc(B)": round(d, 2), "p (A<=B)": round(p, 4)})
     fg = pd.DataFrame(rows)
     fg = fg.rename(columns={m: MODEL_NAME[m] for m in models})
@@ -304,7 +310,7 @@ def figures(df, feats):
                 ax.spines[["top", "right"]].set_visible(False)
             axes[0].set_ylabel("accuracy (%)")
             axes[1].legend(fontsize=7, frameon=False)
-            fig.suptitle(DS_NAME[ds], fontsize=10)
+            fig.suptitle(DS_NAME.get(ds, ds.replace("_from_", " ← trained on ")), fontsize=10)
             fig.tight_layout()
             fig.savefig(os.path.join(FIG, f"distance_{ds}.png"), dpi=200)
             plt.close(fig)
@@ -312,7 +318,7 @@ def figures(df, feats):
     # ablation figure
     a = df[(df.train == df.test) & df.model.isin(["gcn", "gat"]) & (df.layers == 2) & (df.tag == "")]
     if a.graph.nunique() > 1:
-        dss = [x for x in ["rest14", "lap14", "mams"] if x in set(a.test)]
+        dss = [x for x in ["rest14", "lap14", "mams"] if x in set(a[a.graph != "dep"].test)]
         graphs = [x for x in ["dep", "seq", "random", "full"] if x in set(a.graph)]
         fig, axes = plt.subplots(1, len(dss), figsize=(4 * len(dss), 3.4), squeeze=False)
         for ax, ds in zip(axes[0], dss):

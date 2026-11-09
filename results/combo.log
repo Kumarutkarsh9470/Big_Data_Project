@@ -1,0 +1,27 @@
+[lap14+amazon23__rgat__s1] ep1 loss=0.6134 dev_acc=0.8308 dev_f1=0.8248
+[lap14+amazon23__rgat__s1] ep2 loss=0.4666 dev_acc=0.8383 dev_f1=0.8324
+[lap14+amazon23__rgat__s1] ep3 loss=0.4063 dev_acc=0.8626 dev_f1=0.8559
+[lap14+amazon23__rgat__s1] ep4 loss=0.3515 dev_acc=0.8841 dev_f1=0.8763
+[lap14+amazon23__rgat__s1] ep5 loss=0.3073 dev_acc=0.8794 dev_f1=0.8732
+[lap14+amazon23__rgat__s1] ep6 loss=0.2787 dev_acc=0.8822 dev_f1=0.8767
+[lap14+amazon23__rgat__s1] ep7 loss=0.2549 dev_acc=0.8897 dev_f1=0.8840
+[lap14+amazon23__rgat__s1] ep8 loss=0.2212 dev_acc=0.8794 dev_f1=0.8734
+[lap14+amazon23__rgat__s1] ep9 loss=0.1964 dev_acc=0.8935 dev_f1=0.8876
+[lap14+amazon23__rgat__s1] ep10 loss=0.1709 dev_acc=0.9009 dev_f1=0.8969
+[lap14+amazon23__rgat__s1] ep11 loss=0.1601 dev_acc=0.8907 dev_f1=0.8852
+[lap14+amazon23__rgat__s1] ep12 loss=0.1522 dev_acc=0.8935 dev_f1=0.8884
+[lap14+amazon23__rgat__s1] ep13 loss=0.1329 dev_acc=0.9028 dev_f1=0.8972
+[lap14+amazon23__rgat__s1] ep14 loss=0.1248 dev_acc=0.8972 dev_f1=0.8922
+[lap14+amazon23__rgat__s1] ep15 loss=0.1096 dev_acc=0.8953 dev_f1=0.8890
+[lap14+amazon23__rgat__s1] ep16 loss=0.1010 dev_acc=0.8944 dev_f1=0.8896
+[lap14+amazon23__rgat__s1] ep17 loss=0.0922 dev_acc=0.8888 dev_f1=0.8825
+[lap14+amazon23__rgat__s1] ep18 loss=0.0837 dev_acc=0.9065 dev_f1=0.9019
+[lap14+amazon23__rgat__s1] ep19 loss=0.0794 dev_acc=0.8907 dev_f1=0.8853
+[lap14+amazon23__rgat__s1] ep20 loss=0.0739 dev_acc=0.8944 dev_f1=0.8892
+[lap14+amazon23__rgat__s1] ep21 loss=0.0688 dev_acc=0.8916 dev_f1=0.8856
+[lap14+amazon23__rgat__s1] ep22 loss=0.0647 dev_acc=0.8953 dev_f1=0.8902
+[lap14+amazon23__rgat__s1] ep23 loss=0.0626 dev_acc=0.8935 dev_f1=0.8875
+[lap14+amazon23__rgat__s1] ep24 loss=0.0604 dev_acc=0.8869 dev_f1=0.8814
+[lap14+amazon23__rgat__s1] ep25 loss=0.0554 dev_acc=0.8963 dev_f1=0.8922
+[lap14+amazon23__rgat__s1] ep26 loss=0.0487 dev_acc=0.8879 dev_f1=0.8802
+[lap14+amazon23__rgat__s1] DONE lap14: acc=0.6865 f1=0.6325 amazon23: acc=0.9312 f1=0.9240 amazon23_gold: acc=0.4889 f1=0.4717 | train 833s

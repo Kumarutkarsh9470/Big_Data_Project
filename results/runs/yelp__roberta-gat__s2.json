@@ -1,0 +1,77 @@
+{
+ "name": "yelp__roberta-gat__s2",
+ "args": {
+  "dataset": "yelp",
+  "model": "roberta-gat",
+  "graph": "dep",
+  "layers": 2,
+  "heads": 4,
+  "hidden": 300,
+  "dropout": 0.5,
+  "no_pos": false,
+  "seed": 2,
+  "epochs": 4,
+  "patience": 8,
+  "bs": 16,
+  "lr": 2e-05,
+  "plm": "/home/user/Big_Data_Course_Project/resources/roberta-base-spacy",
+  "max_subwords": 128,
+  "threads": 4,
+  "eval_on": [
+   "rest14"
+  ],
+  "tag": "",
+  "save_model": null,
+  "out": "/home/user/Big_Data_Course_Project/results/runs"
+ },
+ "history": [
+  {
+   "epoch": 1,
+   "loss": 0.9547582174429703,
+   "dev_acc": 0.6790123456790124,
+   "dev_f1": 0.37207714627069466
+  },
+  {
+   "epoch": 2,
+   "loss": 0.7375033583896852,
+   "dev_acc": 0.7901234567901234,
+   "dev_f1": 0.5259832366215345
+  },
+  {
+   "epoch": 3,
+   "loss": 0.38729922901813396,
+   "dev_acc": 0.8395061728395061,
+   "dev_f1": 0.6532176973353444
+  },
+  {
+   "epoch": 4,
+   "loss": 0.2082018278938868,
+   "dev_acc": 0.8518518518518519,
+   "dev_f1": 0.6666666666666666
+  }
+ ],
+ "train_time_s": 187.27646470069885,
+ "n_params_trainable": 124984707,
+ "n_params_total": 124984707,
+ "glove_coverage": null,
+ "test": {
+  "yelp": {
+   "acc": 0.8244897959183674,
+   "f1": 0.5931626986212576,
+   "n": 245,
+   "infer_time_s": 3.4184956550598145,
+   "throughput": 71.66895170317633
+  },
+  "rest14": {
+   "acc": 0.7491071428571429,
+   "f1": 0.5295910574515825,
+   "n": 1120,
+   "infer_time_s": 16.012537002563477,
+   "throughput": 69.94519355806622
+  }
+ },
+ "dev": {
+  "acc": 0.8518518518518519,
+  "f1": 0.6666666666666666
+ }
+}

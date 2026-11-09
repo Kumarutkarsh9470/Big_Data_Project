@@ -1,0 +1,42 @@
+{
+ "n_audited": 100,
+ "invalid_aspect": 11,
+ "invalid_rate": 0.11,
+ "label_accuracy_on_valid": 0.6966292134831461,
+ "per_distant_label": {
+  "positive": {
+   "n": 28,
+   "precision": 0.6785714285714286
+  },
+  "negative": {
+   "n": 32,
+   "precision": 0.71875
+  },
+  "neutral": {
+   "n": 29,
+   "precision": 0.6896551724137931
+  }
+ },
+ "confusions": [
+  [
+   "negative->neutral",
+   9
+  ],
+  [
+   "positive->neutral",
+   8
+  ],
+  [
+   "neutral->negative",
+   8
+  ],
+  [
+   "positive->negative",
+   1
+  ],
+  [
+   "neutral->positive",
+   1
+  ]
+ ]
+}

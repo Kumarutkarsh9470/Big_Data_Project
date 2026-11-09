@@ -71,6 +71,7 @@ def main():
     ap.add_argument("--out", default=os.path.join(ROOT, "results", "amazon_mining"))
     ap.add_argument("--n-process", type=int, default=4)
     ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--compare-with", default=None, help="mentions.parquet of another model run on the same reviews (agreement)")
     args = ap.parse_args()
     os.makedirs(args.out, exist_ok=True)
     torch.set_num_threads(4)
@@ -105,23 +106,33 @@ def main():
     # ---- 2. model
     ckpt = torch.load(args.model_path, weights_only=False)
     a = argparse.Namespace(**ckpt["args"])
-    words = {t.lower() for m in mentions for t in m["tokens"]}
-    itos, emb, n_add, n_new = extend_vocab(ckpt, words)
-    print(f"vocab extended with {n_add}/{n_new} unseen words from GloVe")
-    model = GloveGraphModel(emb, len(DEPS), kind=a.model, layers=a.layers, heads=a.heads,
-                            hidden=a.hidden, dropout=a.dropout, use_pos=not a.no_pos)
-    sd = ckpt["state_dict"]
-    sd["emb.weight"] = torch.tensor(emb)
-    model.load_state_dict(sd)
-    model.eval()
+    if a.model.startswith("roberta"):  # transformer / hybrid checkpoint
+        from transformers import AutoTokenizer
+        from absa.models import RobertaABSA
+        tok = AutoTokenizer.from_pretrained(a.plm)
+        model = RobertaABSA(a.plm, kind=a.model, n_rel=len(DEPS), layers=a.layers, heads=a.heads)
+        model.load_state_dict(ckpt["state_dict"])
+        model.eval()
+        vocab, bs = None, 32
+    else:
+        words = {t.lower() for m in mentions for t in m["tokens"]}
+        itos, emb, n_add, n_new = extend_vocab(ckpt, words)
+        print(f"vocab extended with {n_add}/{n_new} unseen words from GloVe")
+        model = GloveGraphModel(emb, len(DEPS), kind=a.model, layers=a.layers, heads=a.heads,
+                                hidden=a.hidden, dropout=a.dropout, use_pos=not a.no_pos)
+        sd = ckpt["state_dict"]
+        sd["emb.weight"] = torch.tensor(emb)
+        model.load_state_dict(sd)
+        model.eval()
+        vocab, tok, bs = V(itos), None, 256
 
     t0 = time.time()
-    feats = featurise(mentions, a, V(itos), None)
+    feats = featurise(mentions, a, vocab, tok)
     timing["featurise_s"] = time.time() - t0
     t0 = time.time()
     probs = np.zeros((len(feats), 3), np.float32)
     with torch.no_grad():
-        for b in batches(feats, 256, False, None):
+        for b in batches(feats, bs, False, None):
             probs[b] = torch.softmax(model(collate([feats[j] for j in b], torch.device("cpu"))), -1).numpy()
     timing["inference_s"] = time.time() - t0
     timing["mentions_per_s_inference"] = len(feats) / timing["inference_s"]
@@ -157,6 +168,12 @@ def main():
                "pred_distribution": m.pred.value_counts(normalize=True).round(4).to_dict(),
                "avg_star_by_predicted_polarity": val["mean"].round(3).to_dict(),
                "spearman_review_aspect_sentiment_vs_stars": {"rho": round(float(rho), 4), "p": float(p), "n_reviews": int(len(rv))}}
+    if args.compare_with:
+        other = pd.read_parquet(args.compare_with)
+        n = min(len(other), len(m))
+        same = other.iloc[:n]
+        assert (same.review.values == m.review.values[:n]).all()
+        summary["agreement_with_other_model"] = round(float((same.pred.values == m.pred.values[:n]).mean()), 4)
     json.dump(summary, open(os.path.join(args.out, "summary.json"), "w"), indent=1)
     bucket.round(4).to_csv(os.path.join(args.out, "polarity_by_star.csv"))
     print(json.dumps(summary, indent=1))
