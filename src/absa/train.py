@@ -1,11 +1,4 @@
-"""Training / evaluation entry point.
-
-Example:
-  python -m absa.train --dataset rest14 --model gcn --seed 1
-  python -m absa.train --dataset lap14 --model roberta --plm resources/roberta-base-spacy
-  python -m absa.train --dataset amazon23 --model gat --graph random    # ablation
-  python -m absa.train --dataset lap14 --model gcn --eval-on amazon23_gold  # cross-domain
-"""
+"""Train/evaluate one model.  e.g.  python -m absa.train --dataset rest14 --model gcn --seed 1"""
 from __future__ import annotations
 
 import argparse
@@ -46,7 +39,6 @@ def data_path(name, split):
     return os.path.join(ROOT, "data", "processed", name, f"{split}.jsonl")
 
 
-# ------------------------------------------------------------------ embeddings
 def load_glove_subset(vocab_words, cache):
     if os.path.exists(cache):
         z = np.load(cache, allow_pickle=True)
@@ -89,7 +81,6 @@ class Vocab:
         return [self.stoi.get(t.lower(), 1) for t in toks]
 
 
-# ------------------------------------------------------------------ featurisation
 def rel_matrix(ex, A):
     n = len(ex["tokens"])
     R = np.zeros((n, n), dtype=np.int64)
@@ -196,7 +187,6 @@ def metrics(y, p):
     return {"acc": accuracy_score(y, p), "f1": f1_score(y, p, average="macro", labels=[0, 1, 2], zero_division=0)}
 
 
-# ------------------------------------------------------------------ main
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--dataset", required=True)

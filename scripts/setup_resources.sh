@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Download everything the pipeline needs into ./resources (≈1.5 GB). Only GitHub is required.
+# Download everything the pipeline needs into ./resources (about 1.5 GB). Only GitHub is required.
 set -e
 cd "$(dirname "$0")/.."
 mkdir -p resources/raw && cd resources
@@ -17,7 +17,7 @@ if [ ! -d raw/ABSADatasets ]; then
   git clone -q https://github.com/yangheng95/ABSADatasets.git raw/ABSADatasets
   git -C raw/ABSADatasets checkout -q 676bcd3d88a901853c74acf364c9ad5c431b0e23
 fi
-# Amazon Reviews 2023 (Electronics) – 100k-review subset mirrored on GitHub, pinned commit.
+# Amazon Reviews 2023 (Electronics), 100k-review subset mirrored on GitHub, pinned commit.
 # (Official source: https://amazon-reviews-2023.github.io ; to use it instead, convert any
 #  category's reviews jsonl to parquet with columns parent_asin,rating,title,text,timestamp.)
 [ -f raw/amazon_reviews_2023_100k.parquet ] || curl -sSL -o raw/amazon_reviews_2023_100k.parquet \

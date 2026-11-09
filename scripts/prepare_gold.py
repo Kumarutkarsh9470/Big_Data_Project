@@ -1,13 +1,4 @@
-"""Build the human-annotated ABSA datasets (train/dev/test jsonl with parses).
-
-  rest14 : SemEval-2014 Task 4 Restaurants  (benchmark, Yelp-like domain)
-  lap14  : SemEval-2014 Task 4 Laptops      (benchmark, product domain)
-  yelp   : Yelp reviews ABSA set distributed with PyABSA (Yang et al.)
-  mams   : MAMS (Jiang et al., 2019) -- every sentence has >=2 aspects with
-           different polarities (optional, --with-mams)
-
-Usage: python scripts/prepare_gold.py --absa-root resources/raw/ABSADatasets
-"""
+"""Build rest14 / lap14 / yelp / mams splits with dependency parses."""
 import argparse, os, sys, time
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))

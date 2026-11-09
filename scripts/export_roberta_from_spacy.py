@@ -1,14 +1,5 @@
-"""Export the RoBERTa-base encoder shipped inside spaCy's `en_core_web_trf`
-pipeline to a HuggingFace-compatible folder (config + weights + tokenizer).
-
-Why: our compute environment cannot reach the HuggingFace Hub, but GitHub
-release assets (spaCy models) are reachable. `en_core_web_trf` contains a full
-RoBERTa-base (125M params) whose weights were additionally fine-tuned by spaCy
-on OntoNotes (tagging/parsing/NER). If you *do* have Hub access you can skip this
-and pass `--plm roberta-base` to the training script instead.
-
-Usage:  python scripts/export_roberta_from_spacy.py --out resources/roberta-base-spacy
-"""
+"""Convert the RoBERTa-base inside spaCy's en_core_web_trf into a HF checkpoint.
+Only needed without Hub access; otherwise use --plm roberta-base."""
 import argparse, json, os
 import torch
 import spacy
@@ -31,7 +22,6 @@ def main():
             sd = node.shims[0]._model.state_dict()
     assert proc is not None and sd is not None
 
-    # ---- tokenizer: dump vocab + merges in GPT-2/RoBERTa format
     vocab = proc.vocab
     with open(os.path.join(args.out, "vocab.json"), "w") as f:
         json.dump(vocab, f, ensure_ascii=False)
@@ -43,7 +33,6 @@ def main():
     tok = RobertaTokenizer(vocab=dict(vocab), merges=[tuple(m) for m in proc.merges])
     tok.save_pretrained(args.out)
 
-    # ---- weights: curated-transformers -> HF Roberta naming
     n_layers = 1 + max(int(k.split(".")[2]) for k in sd if k.startswith("curated_encoder.layers."))
     cfg = RobertaConfig(vocab_size=50265, hidden_size=768, num_hidden_layers=n_layers,
                         num_attention_heads=12, intermediate_size=3072,

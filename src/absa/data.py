@@ -1,11 +1,4 @@
-"""Data loading, sentence cropping and dependency parsing for ABSA.
-
-Every example is stored as one JSON object:
-    {id, text, tokens, heads, deps, pos, from, to, aspect, label, sent_key}
-where `heads[i]` is the index of token i's syntactic head (root points to itself),
-`from`/`to` are the aspect's token span [from, to) and `label` is one of
-LABELS. `sent_key` identifies the sentence (several aspects can share one).
-"""
+"""Readers, sentence cropping and spaCy parsing. One JSON object per (sentence, aspect)."""
 from __future__ import annotations
 
 import json
@@ -27,9 +20,8 @@ def get_nlp(model: str = "en_core_web_lg"):
     return _NLP
 
 
-# ---------------------------------------------------------------- raw readers
 def read_apc_txt(path: str):
-    """PyABSA / ASGCN 3-line format: text-with-$T$ / aspect / polarity."""
+    """3-line APC format: sentence with $T$, aspect, polarity."""
     lines = [l.rstrip("\n") for l in open(path, encoding="utf-8")]
     out = []
     for i in range(0, len(lines) - 2, 3):
@@ -46,7 +38,6 @@ def read_apc_txt(path: str):
     return out
 
 
-# ---------------------------------------------------------------- parsing
 def _doc_to_example(doc, cf, ct, aspect, label):
     span = doc.char_span(cf, ct, alignment_mode="expand")
     if span is None or len(span) == 0:
@@ -63,10 +54,7 @@ def _doc_to_example(doc, cf, ct, aspect, label):
 
 def crop_and_parse(raw: list[dict], max_tokens: int = 80, batch_size: int = 64,
                    n_process: int = 1, crop: bool = True):
-    """Parse each example; if the text has several sentences, keep only the
-    sentence(s) that contain the aspect (plus a neighbour if the sentence is
-    very short). The cropped text is re-parsed so that the tree is a single
-    rooted tree. Examples are de-duplicated on (text) for parsing speed."""
+    """Keep the sentence(s) containing the aspect, re-parse, window long ones to max_tokens."""
     nlp = get_nlp()
     texts = sorted({r["text"] for r in raw})
     docs = {t: d for t, d in zip(texts, nlp.pipe(texts, batch_size=batch_size, n_process=n_process))}
@@ -135,8 +123,7 @@ def add_sentence_keys(examples: list[dict], prefix: str):
 
 
 def stratified_split(examples, frac: float, seed: int = 13, group_key: str = "sent_key"):
-    """Split off `frac` of the *sentences* (not aspects) so that aspects of the
-    same sentence never leak across splits."""
+    """Split by sentence so aspects of one sentence stay together."""
     groups = defaultdict(list)
     for ex in examples:
         groups[ex[group_key]].append(ex)
@@ -152,7 +139,6 @@ def stratified_split(examples, frac: float, seed: int = 13, group_key: str = "se
     return a, b
 
 
-# ---------------------------------------------------------------- io
 def save_jsonl(examples: Iterable[dict], path: str):
     with open(path, "w", encoding="utf-8") as f:
         for ex in examples:

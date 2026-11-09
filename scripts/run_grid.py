@@ -1,9 +1,4 @@
-"""Run a grid of experiments with N parallel workers; finished runs are skipped.
-
-  python scripts/run_grid.py --grid main --workers 4
-  python scripts/run_grid.py --grid ablation --workers 4
-  python scripts/run_grid.py --grid plm --workers 1 --threads 4
-"""
+"""Run an experiment grid in parallel. Finished or running jobs are skipped."""
 import argparse, itertools, os, subprocess, sys, time
 from concurrent.futures import ThreadPoolExecutor
 

@@ -39,19 +39,19 @@
 | Amazon23 (distant)                              | RoBERTa (fine-tuned)     | R-GAT (dep. tree + rel.) |            1.24 |     0.0382 |
 | Amazon23 (distant)                              | RoBERTa+R-GAT            | RoBERTa (fine-tuned)     |           -0.23 |     0.7206 |
 | Amazon23 (distant)                              | RoBERTa+GCN              | RoBERTa (fine-tuned)     |            0.58 |     0.1324 |
-| Amazon23 (gold) ← trained on Amazon23 (distant) | GCN (dep. tree)          | BiLSTM+Att (no graph)    |            1.63 |     0.125  |
-| Amazon23 (gold) ← trained on Amazon23 (distant) | GAT (dep. tree)          | BiLSTM+Att (no graph)    |           -0.3  |     0.618  |
-| Amazon23 (gold) ← trained on Amazon23 (distant) | R-GAT (dep. tree + rel.) | BiLSTM+Att (no graph)    |            0.3  |     0.4258 |
-| Amazon23 (gold) ← trained on Amazon23 (distant) | R-GAT (dep. tree + rel.) | GCN (dep. tree)          |           -1.33 |     0.8858 |
-| Amazon23 (gold) ← trained on Amazon23 (distant) | GAT (dep. tree)          | GCN (dep. tree)          |           -1.93 |     0.9708 |
-| Amazon23 (gold) ← trained on Amazon23 (distant) | RoBERTa (fine-tuned)     | R-GAT (dep. tree + rel.) |            1.33 |     0.2566 |
-| Amazon23 (gold) ← trained on Amazon23 (distant) | RoBERTa+R-GAT            | RoBERTa (fine-tuned)     |           -0.44 |     0.7582 |
-| Amazon23 (gold) ← trained on Amazon23 (distant) | RoBERTa+GCN              | RoBERTa (fine-tuned)     |            3.11 |     0.0004 |
-| Amazon23 (gold) ← trained on Lap14              | GCN (dep. tree)          | BiLSTM+Att (no graph)    |           -3.26 |     0.9322 |
-| Amazon23 (gold) ← trained on Lap14              | GAT (dep. tree)          | BiLSTM+Att (no graph)    |           -7.41 |     1      |
-| Amazon23 (gold) ← trained on Lap14              | R-GAT (dep. tree + rel.) | BiLSTM+Att (no graph)    |           -5.19 |     0.9944 |
-| Amazon23 (gold) ← trained on Lap14              | R-GAT (dep. tree + rel.) | GCN (dep. tree)          |           -1.93 |     0.8912 |
-| Amazon23 (gold) ← trained on Lap14              | GAT (dep. tree)          | GCN (dep. tree)          |           -4.15 |     0.9988 |
-| Amazon23 (gold) ← trained on Lap14              | RoBERTa (fine-tuned)     | R-GAT (dep. tree + rel.) |           13.04 |     0      |
-| Amazon23 (gold) ← trained on Lap14              | RoBERTa+R-GAT            | RoBERTa (fine-tuned)     |            4    |     0.0748 |
-| Amazon23 (gold) ← trained on Lap14              | RoBERTa+GCN              | RoBERTa (fine-tuned)     |            5.11 |     0.0194 |
+| Amazon23 (gold) (trained on Amazon23 (distant)) | GCN (dep. tree)          | BiLSTM+Att (no graph)    |            1.63 |     0.125  |
+| Amazon23 (gold) (trained on Amazon23 (distant)) | GAT (dep. tree)          | BiLSTM+Att (no graph)    |           -0.3  |     0.618  |
+| Amazon23 (gold) (trained on Amazon23 (distant)) | R-GAT (dep. tree + rel.) | BiLSTM+Att (no graph)    |            0.3  |     0.4258 |
+| Amazon23 (gold) (trained on Amazon23 (distant)) | R-GAT (dep. tree + rel.) | GCN (dep. tree)          |           -1.33 |     0.8858 |
+| Amazon23 (gold) (trained on Amazon23 (distant)) | GAT (dep. tree)          | GCN (dep. tree)          |           -1.93 |     0.9708 |
+| Amazon23 (gold) (trained on Amazon23 (distant)) | RoBERTa (fine-tuned)     | R-GAT (dep. tree + rel.) |            1.33 |     0.2566 |
+| Amazon23 (gold) (trained on Amazon23 (distant)) | RoBERTa+R-GAT            | RoBERTa (fine-tuned)     |           -0.44 |     0.7582 |
+| Amazon23 (gold) (trained on Amazon23 (distant)) | RoBERTa+GCN              | RoBERTa (fine-tuned)     |            3.11 |     0.0004 |
+| Amazon23 (gold) (trained on Lap14)              | GCN (dep. tree)          | BiLSTM+Att (no graph)    |           -3.26 |     0.9322 |
+| Amazon23 (gold) (trained on Lap14)              | GAT (dep. tree)          | BiLSTM+Att (no graph)    |           -7.41 |     1      |
+| Amazon23 (gold) (trained on Lap14)              | R-GAT (dep. tree + rel.) | BiLSTM+Att (no graph)    |           -5.19 |     0.9944 |
+| Amazon23 (gold) (trained on Lap14)              | R-GAT (dep. tree + rel.) | GCN (dep. tree)          |           -1.93 |     0.8912 |
+| Amazon23 (gold) (trained on Lap14)              | GAT (dep. tree)          | GCN (dep. tree)          |           -4.15 |     0.9988 |
+| Amazon23 (gold) (trained on Lap14)              | RoBERTa (fine-tuned)     | R-GAT (dep. tree + rel.) |           13.04 |     0      |
+| Amazon23 (gold) (trained on Lap14)              | RoBERTa+R-GAT            | RoBERTa (fine-tuned)     |            4    |     0.0748 |
+| Amazon23 (gold) (trained on Lap14)              | RoBERTa+GCN              | RoBERTa (fine-tuned)     |            5.11 |     0.0194 |

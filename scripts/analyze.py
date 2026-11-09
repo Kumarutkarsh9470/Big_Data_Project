@@ -1,7 +1,4 @@
-"""Aggregate all runs into tables + figures (results/tables, results/figures).
-
-  python scripts/analyze.py
-"""
+"""Collect results/runs into tables and figures."""
 import glob, json, os, re, sys
 from collections import defaultdict
 
@@ -69,7 +66,6 @@ def table(df, index, columns, metric):
     return g.pivot(index=index, columns=columns, values="cell"), g
 
 
-# ------------------------------------------------------------------ main results
 def main_results(df):
     d = df[(df.graph == "dep") & (df.layers == 2) & (df.tag == "") & (df.train == df.test)]
     out = []
@@ -93,7 +89,7 @@ def cross_domain(df):
     d = df[(df.graph == "dep") & (df.layers == 2) & (df.tag == "") & (df.train != df.test)]
     if d.empty:
         return None
-    d = d.assign(pair=[f"{DS_NAME[a]} → {DS_NAME[b]}" for a, b in zip(d.train, d.test)])
+    d = d.assign(pair=[f"{DS_NAME[a]} -> {DS_NAME[b]}" for a, b in zip(d.train, d.test)])
     rows = {}
     for metric in ["acc", "f1"]:
         t, _ = table(d, "model", "pair", metric)
@@ -141,7 +137,6 @@ def efficiency(df):
     return e
 
 
-# ------------------------------------------------------------------ fine-grained analysis
 def opinion_lexicon():
     from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
     return {w for w, v in SentimentIntensityAnalyzer().lexicon.items() if abs(v) >= 1.0 and w.isalpha()}
@@ -159,7 +154,6 @@ def example_features(ex, lex):
         tre = [td[i] for i in op]
         f["lin_dist"] = min(lin)
         f["tree_dist"] = min(tre)
-        # is the linearly-closest opinion word also (one of) the syntactically closest?
         j = int(np.argmin(lin))
         f["distractor"] = tre[j] > min(tre)
         f["lin_minus_tree"] = min(lin) - min(tre)
@@ -205,9 +199,9 @@ def fine_grained(df, preds):
     all_feats = []
     for ds, train in [("rest14", "rest14"), ("lap14", "lap14"), ("mams", "mams"), ("yelp", "yelp"),
                       ("amazon23", "amazon23"), ("amazon23_gold", "amazon23"), ("amazon23_gold", "lap14")]:
-        label = DS_NAME[ds] if train in (ds, "amazon23") else f"{DS_NAME[ds]} ← trained on {DS_NAME[train]}"
+        label = DS_NAME[ds] if train in (ds, "amazon23") else f"{DS_NAME[ds]} (trained on {DS_NAME[train]})"
         if ds == "amazon23_gold" and train == "amazon23":
-            label = f"{DS_NAME[ds]} ← trained on {DS_NAME[train]}"
+            label = f"{DS_NAME[ds]} (trained on {DS_NAME[train]})"
         exs = load_jsonl(data_file(ds))
         feats = pd.DataFrame([example_features(e, lex) for e in exs])
         corr = per_example_correct(preds, df, ds, models, train=train)
@@ -239,7 +233,7 @@ def fine_grained(df, preds):
             for m in corr:
                 r[m] = corr[m][mask].mean() * 100 if mask.sum() else np.nan
             rows.append(r)
-        # significance of key comparisons (paired bootstrap over test examples, seed-averaged)
+        # paired bootstrap, correctness averaged over seeds
         for a, b in [("gcn", "lstm"), ("gat", "lstm"), ("rgat", "lstm"), ("rgat", "gcn"), ("gat", "gcn"),
                      ("roberta", "rgat"), ("roberta-gat", "roberta"), ("roberta-gcn", "roberta")]:
             if a in corr and b in corr:
@@ -258,7 +252,6 @@ def fine_grained(df, preds):
     return fg, sg, (pd.concat(all_feats) if all_feats else None)
 
 
-# ------------------------------------------------------------------ figures
 def figures(df, feats):
     import matplotlib
     matplotlib.use("Agg")
@@ -297,8 +290,8 @@ def figures(df, feats):
             f["tb"] = f.tree_dist.clip(upper=4).astype(int)
             f["lb"] = pd.cut(f.lin_dist, [0, 1, 2, 4, 8, 100], labels=["1", "2", "3-4", "5-8", ">8"])
             fig, axes = plt.subplots(1, 2, figsize=(10, 3.6), sharey=True)
-            for ax, col, xl in [(axes[0], "tb", "tree distance aspect→nearest opinion word (4 = ≥4)"),
-                                (axes[1], "lb", "linear distance aspect→nearest opinion word (tokens)")]:
+            for ax, col, xl in [(axes[0], "tb", "tree distance to nearest opinion word (4 means 4+)"),
+                                (axes[1], "lb", "linear distance to nearest opinion word (tokens)")]:
                 gg = f.groupby(col, observed=True)[ms].mean() * 100
                 cnt = f.groupby(col, observed=True).size()
                 for m in ms:
@@ -310,7 +303,7 @@ def figures(df, feats):
                 ax.spines[["top", "right"]].set_visible(False)
             axes[0].set_ylabel("accuracy (%)")
             axes[1].legend(fontsize=7, frameon=False)
-            fig.suptitle(DS_NAME.get(ds, ds.replace("_from_", " ← trained on ")), fontsize=10)
+            fig.suptitle(DS_NAME.get(ds, ds.replace("_from_", ", trained on ")), fontsize=10)
             fig.tight_layout()
             fig.savefig(os.path.join(FIG, f"distance_{ds}.png"), dpi=200)
             plt.close(fig)

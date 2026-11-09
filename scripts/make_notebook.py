@@ -18,7 +18,7 @@ This notebook is the executable companion of the project. It
 4. runs a trained dependency-GAT on new sentences and shows what it attends to,
 5. summarises corpus-scale aspect mining over 100k Amazon reviews.
 
-**Re-running everything from scratch** (≈ 8–10 h on a 4-core CPU, no GPU needed) is described in `README.md`:
+**Re-running everything from scratch** (roughly 12 h on a 4-core CPU, no GPU needed) is described in `README.md`:
 `bash scripts/setup_resources.sh && python scripts/prepare_gold.py --datasets rest14 lap14 yelp mams && python scripts/build_amazon2023_absa.py && python scripts/make_amazon_gold.py && bash scripts/run_all.sh`.
 The cells below only need the already-produced `results/` (and, for the demo section, a saved checkpoint).""")
 
@@ -35,9 +35,9 @@ md("## 1. Datasets")
 md("""| name | source | labels | role |
 |---|---|---|---|
 | **Yelp** | Yelp reviews ABSA set (PyABSA collection) | human | target domain (restaurants/shops) |
-| **Amazon23 (distant)** | Amazon Reviews 2023 – Electronics, 40k reviews | distant supervision (rating ∧ VADER, see below) | target domain (products), training |
+| **Amazon23 (distant)** | Amazon Reviews 2023, Electronics, 40k reviews | distant supervision (rating + VADER, see below) | target domain (products), training |
 | **Amazon23 (gold)** | 225 aspect mentions from *disjoint* Amazon 2023 reviews, 154 from contrastive multi-aspect sentences | manual | target domain evaluation |
-| Rest14 / Lap14 | SemEval-2014 Task 4 | human | standard benchmarks (restaurant ≈ Yelp, laptop ≈ Amazon Electronics) |
+| Rest14 / Lap14 | SemEval-2014 Task 4 | human | standard benchmarks (restaurants for Yelp, laptops for Amazon Electronics) |
 | MAMS | Jiang et al. 2019 | human | stress test: every sentence has ≥2 aspects with different polarities |
 
 Long Yelp reviews are cropped to the sentence(s) that contain the aspect, so that every example is a single dependency tree.""")
@@ -58,12 +58,12 @@ pd.DataFrame(rows)""")
 
 md("""### Distant supervision for Amazon Reviews 2023
 Raw Amazon reviews only have star ratings. `scripts/build_amazon2023_absa.py` mines an aspect lexicon (frequent nouns and compound nouns such as *battery life*, *sound quality*) and labels a sentence's aspects
-**positive** if rating ≥ 4 and VADER ≥ 0.5, **negative** if rating ≤ 2 and VADER ≤ −0.3, **neutral** if the sentence has no sentiment words at all; contrastive sentences (*but, however, …*) are excluded.
+**positive** if rating ≥ 4 and VADER ≥ 0.5, **negative** if rating ≤ 2 and VADER ≤ -0.3, **neutral** if the sentence has no sentiment words at all; contrastive sentences (*but*, *however*, ...) are excluded.
 We hand-checked 100 random distant test labels to measure the noise:""")
 code("""a = json.load(open(f'{ROOT}/results/tables/distant_label_audit.json'))
 print(f"invalid aspect candidates: {a['invalid_rate']:.0%};  label accuracy on valid aspects: {a['label_accuracy_on_valid']:.1%}")
 print('most common errors:', a['confusions'])""")
-md("""Almost every error is *sentence sentiment attributed to an incidental noun* (neg/pos → neutral), polarity flips are rare.
+md("""Almost every error is *sentence sentiment attributed to an incidental noun* (neg/pos instead of neutral), polarity flips are rare.
 The distant **test** set therefore has a noise ceiling of roughly 70 % accuracy, which is why the manually annotated **gold** set (with many contrastive, multi-aspect sentences) is the main Amazon evaluation.""")
 
 md("## 2. From a sentence to a graph")
@@ -83,12 +83,12 @@ ax.set_yticks(range(len(doc))); ax.set_yticklabels([t.text for t in doc]); ax.se
 md("""In the linear order, *great* and *dim* are both exactly 3 tokens away from *screen*, so a purely sequential model has no positional cue for which opinion belongs to it. In the tree, *dim* is 2 hops from *screen* and *great* is 3 hops away (through the `conj` edge), while from *battery life* *great* is 2 hops away and *dim* 3. The GNNs propagate information only along these edges, so the opinion word that is *syntactically* attached to an aspect dominates its representation.
 
 **Models** (`src/absa/models.py`):
-* **BiLSTM+Att** – same encoder/readout as the GNNs, no graph (ablation baseline)
-* **GCN** – ASGCN-style: BiLSTM → 2 GCN layers over the dependency graph (position-weighted) → aspect mask → attention readout
-* **GAT** – the GCN layers replaced by 4-head graph attention restricted to dependency neighbours
-* **R-GAT** – GAT whose attention logits and messages also use the dependency *relation* label (nsubj, amod, …)
-* **RoBERTa** – fine-tuned sentence-pair transformer baseline `<s> sentence </s></s> aspect </s>`
-* **RoBERTa+GCN / RoBERTa+R-GAT** – hybrid: RoBERTa word states → dependency GNN → [CLS; aspect] classifier""")
+* **BiLSTM+Att**: same encoder/readout as the GNNs, no graph (ablation baseline)
+* **GCN**: ASGCN-style. BiLSTM, then 2 GCN layers over the dependency graph (position-weighted), aspect mask, attention readout
+* **GAT**: the GCN layers replaced by 4-head graph attention restricted to dependency neighbours
+* **R-GAT**: GAT whose attention logits and messages also use the dependency *relation* label (nsubj, amod, ...)
+* **RoBERTa**: fine-tuned sentence-pair transformer baseline `<s> sentence </s></s> aspect </s>`
+* **RoBERTa+GCN / RoBERTa+R-GAT**: RoBERTa word states go through a dependency GNN; the classifier sees [CLS; aspect]""")
 
 md("## 3. Main results")
 code("show_md('results/tables/main_results.md')")
@@ -170,7 +170,7 @@ if os.path.exists(p):
     display(Image(f'{ROOT}/results/amazon_mining/top_aspects.png')); display(Image(f'{ROOT}/results/amazon_mining/polarity_by_star.png'))
     display(pd.read_csv(f'{ROOT}/results/amazon_mining/aspect_summary.csv').head(25))""")
 md("""### Accuracy vs. throughput at corpus scale
-The same pipeline with the RoBERTa+GCN hybrid on the first 10k reviews: about 28x slower on CPU, but far more accurate on the gold set (≈64 % vs ≈49 %). Agreement between the two models on identical mentions is reported below.""")
+The same pipeline with the RoBERTa+GCN hybrid on the first 10k reviews: about 28x slower on CPU, but far more accurate on the gold set (about 64 % vs 49 %). Agreement between the two models on identical mentions is reported below.""")
 code("""p = f'{ROOT}/results/amazon_mining_roberta_gcn_10k/summary.json'
 if os.path.exists(p):
     r = json.load(open(p)); g = json.load(open(f'{ROOT}/results/amazon_mining/summary.json'))

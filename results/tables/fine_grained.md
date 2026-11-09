@@ -93,7 +93,7 @@
 | linear >> tree (lin - tree >= 3)                  | 192 |                    91   |              91.1 |              93.8 |                       92.2 |                   95.3 |          96.4 |            94.3 |
 | distractor (lin-closest opinion not tree-closest) |  65 |                    91.3 |              91.8 |              92.8 |                       91.8 |                   92.3 |          95.4 |            95.4 |
 
-### Amazon23 (gold) ← trained on Amazon23 (distant): accuracy (%) by subgroup (seed-averaged)
+### Amazon23 (gold) (trained on Amazon23 (distant)): accuracy (%) by subgroup (seed-averaged)
 
 | group                                             |   n |   BiLSTM+Att (no graph) |   GCN (dep. tree) |   GAT (dep. tree) |   R-GAT (dep. tree + rel.) |   RoBERTa (fine-tuned) |   RoBERTa+GCN |   RoBERTa+R-GAT |
 |:--------------------------------------------------|----:|------------------------:|------------------:|------------------:|---------------------------:|-----------------------:|--------------:|----------------:|
@@ -112,7 +112,7 @@
 | linear >> tree (lin - tree >= 3)                  |  72 |                    42.6 |              42.6 |              42.6 |                       43.5 |                   44.4 |          45.8 |            43.1 |
 | distractor (lin-closest opinion not tree-closest) |   8 |                    62.5 |              66.7 |              62.5 |                       62.5 |                   62.5 |          62.5 |            62.5 |
 
-### Amazon23 (gold) ← trained on Lap14: accuracy (%) by subgroup (seed-averaged)
+### Amazon23 (gold) (trained on Lap14): accuracy (%) by subgroup (seed-averaged)
 
 | group                                             |   n |   BiLSTM+Att (no graph) |   GCN (dep. tree) |   GAT (dep. tree) |   R-GAT (dep. tree + rel.) |   RoBERTa (fine-tuned) |   RoBERTa+GCN |   RoBERTa+R-GAT |
 |:--------------------------------------------------|----:|------------------------:|------------------:|------------------:|---------------------------:|-----------------------:|--------------:|----------------:|

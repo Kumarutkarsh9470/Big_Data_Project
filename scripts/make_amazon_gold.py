@@ -1,9 +1,4 @@
-"""Merge manual annotations into the Amazon-2023 gold test set and measure the
-noise of the distant labels.
-
-  data/annotations/amazon23_gold_labels.tsv   -> data/processed/amazon23/gold_test.jsonl
-  data/annotations/amazon23_distant_audit.tsv -> results/tables/distant_label_audit.json
-"""
+"""Build amazon23/gold_test.jsonl from the manual labels and score the distant-label audit."""
 import json, os, sys
 from collections import Counter
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))

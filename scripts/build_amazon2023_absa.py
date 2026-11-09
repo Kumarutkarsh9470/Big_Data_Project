@@ -1,25 +1,9 @@
-"""Build an aspect-level sentiment dataset from raw Amazon Reviews 2023 (Electronics).
+"""Distantly labelled ABSA data from Amazon Reviews 2023 (Electronics).
 
-The raw corpus only has review-level star ratings, so aspect labels are derived
-with *distant supervision* (documented in the report):
-
- 1. Reviews are cleaned, split into sentences and dependency-parsed (spaCy).
- 2. An aspect lexicon is mined from the corpus: frequent nouns and
-    compound-noun bigrams (e.g. "battery life", "sound quality"), minus a
-    stoplist of non-aspect nouns (time, thing, review, ...).
- 3. For every sentence that mentions >=1 lexicon aspect:
-       positive : review rating >= 4  AND VADER(sentence) >= +0.5
-       negative : review rating <= 2  AND VADER(sentence) <= -0.3
-       neutral  : sentence carries no sentiment words at all (VADER pos=neg=0)
-                  and contains no evaluative adjective
-    Sentences with contrast markers (but/however/although/...) are excluded
-    from the distant set because their aspects may disagree in polarity.
- 4. Reviews are split 80/10/10 into train/dev/test (by review, no leakage).
- 5. From a *disjoint* pool of reviews we sample candidate aspect mentions for
-    manual annotation (`annotation_pool.jsonl`), over-sampling multi-aspect and
-    contrastive sentences, i.e. the cases where syntax should matter.
-
-Usage: python scripts/build_amazon2023_absa.py --parquet resources/raw/amazon_reviews_2023_100k.parquet
+Aspects come from a mined noun / compound-noun lexicon. Labels:
+  pos: rating >= 4 and VADER >= 0.5;  neg: rating <= 2 and VADER <= -0.3;
+  neu: no sentiment words in the sentence.  Contrastive sentences are dropped.
+Also writes an annotation pool from held-out reviews (annotation_pool.jsonl).
 """
 import argparse, html, os, random, re, sys, time
 from collections import Counter, defaultdict
@@ -46,8 +30,6 @@ complaint complaints cons fun waste junk expectations market business school off
 bedroom door floor kitchen living trip travel center area spot page note mine head eye
 car gift christmas foot feet inch inches name tips user customer manufacturer company seller
 """.split())
-# 'product', 'item', 'price', 'value', 'case' are frequent but either generic or
-# ambiguous ('case' = phone case vs. 'in this case'); price/value are kept below.
 KEEP_ANYWAY = {"price", "value", "case"}
 STOP_ASPECTS -= KEEP_ANYWAY
 
@@ -164,7 +146,6 @@ def main():
             f.write(f"{w}\t{uni[w]}\n")
     print("lexicon:", len(lex_u), "unigrams,", len(lex_b), "bigrams; top:", sorted(lex_u, key=lambda w: -uni[w])[:40])
 
-    # ---------------- distant labelling
     stats = Counter()
     by_label = defaultdict(list)
     for d, meta in main_sents:
@@ -198,7 +179,6 @@ def main():
     for lab, cap in zip(["negative", "neutral", "positive"], args.cap):
         exs = by_label[lab]
         rng.shuffle(exs)
-        # at most 2 aspects per sentence to avoid long lists of the same sentence
         per_sent = Counter()
         keep = []
         for e in exs:
@@ -223,7 +203,6 @@ def main():
         save_jsonl(exs, os.path.join(args.out, f"{s}.jsonl"))
         print(f"amazon23 {s:5s} n={len(exs):5d} {label_dist(exs)}")
 
-    # ---------------- annotation pool (disjoint reviews)
     cands = []
     for d, meta in pool_sents:
         spans = find_aspects(d, lex_u, lex_b)
@@ -238,7 +217,6 @@ def main():
     rng.shuffle(cands)
     hard = [c for c in cands if c["contrast"] and c["n_spans"] >= 2]
     easy = [c for c in cands if not (c["contrast"] and c["n_spans"] >= 2)]
-    # keep whole sentences for the hard part so that contrasting aspects are both annotated
     hard_sents = []
     seen = set()
     for c in hard:

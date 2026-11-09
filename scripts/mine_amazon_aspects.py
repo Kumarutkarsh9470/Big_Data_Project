@@ -1,14 +1,5 @@
-"""Corpus-scale aspect-sentiment mining on Amazon Reviews 2023 (Electronics, 100k reviews).
-
-Pipeline: clean -> spaCy sentence split + dependency parse (multi-process)
-          -> aspect mentions from the mined lexicon -> batched GNN inference
-          -> aggregation per aspect / per product + validation against star ratings.
-
-Because the GloVe embeddings are frozen during training, the vocabulary can be
-extended at inference time with GloVe vectors for words never seen in training.
-
-  python scripts/mine_amazon_aspects.py --model-path results/models/amazon23_gat.pt
-"""
+"""Run a trained model over all Amazon reviews and aggregate sentiment per aspect.
+GloVe vocab is extended at inference time (embeddings are frozen in training)."""
 import argparse, gzip, json, os, sys, time
 from collections import Counter
 
@@ -84,7 +75,6 @@ def main():
         df = df.iloc[:args.limit]
     print("reviews:", len(df))
 
-    # ---- 1. parse
     nlp = get_nlp()
     lex_u, lex_b = load_lexicon(args.lexicon)
     t0 = time.time()
@@ -103,7 +93,6 @@ def main():
     timing["parse_s"] = time.time() - t0
     print(f"parsed {len(df)} reviews / {n_sents} sentences -> {len(mentions)} aspect mentions in {timing['parse_s']:.0f}s")
 
-    # ---- 2. model
     ckpt = torch.load(args.model_path, weights_only=False)
     a = argparse.Namespace(**ckpt["args"])
     if a.model.startswith("roberta"):  # transformer / hybrid checkpoint
@@ -139,7 +128,6 @@ def main():
     timing["reviews_per_s_end_to_end"] = len(df) / sum(timing[k] for k in ("parse_s", "featurise_s", "inference_s"))
     print(json.dumps(timing, indent=1))
 
-    # ---- 3. aggregate
     pred = probs.argmax(1)
     m = pd.DataFrame({"review": [x["review"] for x in mentions], "aspect": [x["aspect"] for x in mentions],
                       "pred": [LABELS[p] for p in pred], "conf": probs.max(1)})
@@ -156,10 +144,8 @@ def main():
     agg["net_sentiment"] = agg.pos - agg.neg
     agg.round(4).to_csv(os.path.join(args.out, "aspect_summary.csv"))
 
-    # validation: does predicted aspect polarity agree with the review's star rating?
     val = m.groupby("pred").rating.agg(["mean", "count"]).reindex(LABELS)
     bucket = m.assign(star=m.rating).groupby("star").pred.value_counts(normalize=True).unstack().reindex(columns=LABELS)
-    # review-level: mean (pos - neg) over a review's mentions vs. stars
     rv = m.assign(s=(m.pred == "positive").astype(int) - (m.pred == "negative").astype(int)).groupby("review").agg(s=("s", "mean"), rating=("rating", "first"))
     from scipy.stats import spearmanr
     rho, p = spearmanr(rv.s, rv.rating)
@@ -179,7 +165,6 @@ def main():
     print(json.dumps(summary, indent=1))
     print(bucket.round(3))
 
-    # ---- 4. figures
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt

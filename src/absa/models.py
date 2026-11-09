@@ -1,44 +1,24 @@
-"""Models compared in the project.
-
-GloVe-based (BiLSTM encoder, embeddings frozen):
-  lstm   : BiLSTM + aspect-aware attention, no graph (ablation: is the graph useful?)
-  gcn    : ASGCN-style (Zhang et al., 2019) - BiLSTM -> L x GCN over the dependency
-           graph (position weighted) -> aspect mask -> attention readout
-  gat    : same, GCN layers replaced by multi-head graph attention restricted to
-           dependency neighbours (Velickovic et al., 2018)
-  rgat   : relation-aware GAT - dependency relation labels enter the attention
-           logits and messages (in the spirit of Wang et al., 2020 R-GAT)
-
-Transformer-based (RoBERTa-base, fine-tuned end-to-end):
-  roberta     : sentence-pair classifier [<s> sentence </s></s> aspect </s>]
-  roberta-gcn : RoBERTa word states -> GCN over dependency graph -> aspect pooling
-  roberta-gat : same with relation-aware GAT
-"""
+"""GloVe models: lstm, gcn (ASGCN), gat, rgat.  PLM models: roberta, roberta-gcn, roberta-gat."""
 from __future__ import annotations
-
-import math
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 
-# ------------------------------------------------------------------ graph layers
 class GCNLayer(nn.Module):
     def __init__(self, d_in, d_out):
         super().__init__()
         self.lin = nn.Linear(d_in, d_out)
 
     def forward(self, h, adj):
-        # adj: (B, N, N) with self loops; row-normalised mean aggregation (ASGCN)
         deg = adj.sum(-1, keepdim=True).clamp(min=1)
         return F.relu(torch.bmm(adj, self.lin(h)) / deg)
 
 
 class GATLayer(nn.Module):
-    """Multi-head graph attention restricted to `adj` (dependency neighbours).
-    If n_rel > 0 the dependency relation of edge (i,j) adds a learned bias to the
-    attention logit and a relation embedding to the message."""
+    """GAT over dependency neighbours. With n_rel > 0 the edge label adds a bias to the
+    logits and a relation embedding to the message (R-GAT)."""
 
     def __init__(self, d_in, d_out, heads=4, n_rel=0, dropout=0.1, norm=True):
         super().__init__()
@@ -48,8 +28,7 @@ class GATLayer(nn.Module):
         self.W = nn.Linear(d_in, d_out, bias=False)
         self.a_src = nn.Parameter(torch.empty(heads, self.dk))
         self.a_dst = nn.Parameter(torch.empty(heads, self.dk))
-        # zero init => uniform attention over dependency neighbours at the start,
-        # i.e. the layer starts as GCN-style mean aggregation and learns to deviate
+        # zero init: starts as uniform (mean) aggregation
         nn.init.zeros_(self.a_src)
         nn.init.zeros_(self.a_dst)
         self.n_rel = n_rel
@@ -66,27 +45,22 @@ class GATLayer(nn.Module):
 
     def forward(self, h, adj, rel=None):
         B, N, _ = h.shape
-        z = self.W(h).view(B, N, self.h, self.dk)                   # B N H dk
-        s = (z * self.a_src).sum(-1)                                 # B N H
+        z = self.W(h).view(B, N, self.h, self.dk)
+        s = (z * self.a_src).sum(-1)
         d = (z * self.a_dst).sum(-1)
-        logits = F.leaky_relu(s.unsqueeze(2) + d.unsqueeze(1), 0.2)  # B N(i) N(j) H
+        logits = F.leaky_relu(s.unsqueeze(2) + d.unsqueeze(1), 0.2)  # B, N, N, H
         if self.n_rel and rel is not None:
             logits = logits + self.rel_bias(rel)
         logits = logits.masked_fill(adj.unsqueeze(-1) == 0, -1e9)
-        att = self.drop(torch.softmax(logits, dim=2))                # over neighbours j
+        att = self.drop(torch.softmax(logits, dim=2))
         msg = torch.einsum("bijh,bjhd->bihd", att, z).reshape(B, N, -1)
         if self.n_rel and rel is not None:
-            # relation messages: sum_j att_ij * r_ij  (averaged over heads)
-            # computed as (attention mass per relation type) @ relation embeddings,
-            # which avoids materialising a B x N x N x D tensor
+            # sum_j att_ij * r_ij without building a B x N x N x D tensor
             M = torch.zeros(B, N, self.n_rel, device=h.device, dtype=att.dtype)
-            M.scatter_add_(2, rel, att.mean(-1))                      # B N R
+            M.scatter_add_(2, rel, att.mean(-1))
             msg = msg + M @ self.rel_msg.weight
         if not self.use_norm:
-            # same output form as GCNLayer: ReLU(aggregated W h), no extra output
-            # projection / residual / LayerNorm (stacking a second linear map here
-            # made training unstable), so the ASGCN-style readout sees features on
-            # the same scale as with the GCN
+            # match GCNLayer output; an extra output projection here was unstable
             return F.relu(msg)
         return self.norm(F.elu(self.out(msg)) + self.res(h))
 
@@ -96,7 +70,6 @@ def masked_mean(h, mask):
     return (h * m).sum(1) / m.sum(1).clamp(min=1)
 
 
-# ------------------------------------------------------------------ GloVe models
 class GloveGraphModel(nn.Module):
     def __init__(self, emb_matrix, n_rel, kind="gcn", hidden=300, layers=2, heads=4,
                  dropout=0.5, n_class=3, n_pos=20, use_pos=True):
@@ -132,13 +105,12 @@ class GloveGraphModel(nn.Module):
         for layer in self.gnn:
             if self.kind == "gcn":
                 g = layer(g * b["pw"].unsqueeze(-1), b["adj"])
-            else:  # same ASGCN position weighting as the GCN for a fair comparison
+            else:
                 g = layer(g * b["pw"].unsqueeze(-1), b["adj"], b.get("rel"))
             g = self.gnn_drop(g)
-        # aspect-specific readout (ASGCN): aspect vector from the graph output
-        # attends over the BiLSTM states of the whole sentence
-        asp = (g * b["amask"].unsqueeze(-1)).sum(1, keepdim=True)          # B 1 D
-        scores = torch.bmm(asp, H.transpose(1, 2)).squeeze(1)               # B N
+        # ASGCN readout: masked aspect states attend over the BiLSTM states
+        asp = (g * b["amask"].unsqueeze(-1)).sum(1, keepdim=True)
+        scores = torch.bmm(asp, H.transpose(1, 2)).squeeze(1)
         scores = scores.masked_fill(b["mask"] == 0, -1e9)
         alpha = torch.softmax(scores, -1)
         r = torch.bmm(alpha.unsqueeze(1), H).squeeze(1)
@@ -146,7 +118,6 @@ class GloveGraphModel(nn.Module):
         return self.fc(r)
 
 
-# ------------------------------------------------------------------ transformer models
 class RobertaABSA(nn.Module):
     def __init__(self, plm_path, kind="roberta", n_rel=0, layers=2, heads=4, gnn_dim=384,
                  dropout=0.1, n_class=3):
@@ -172,7 +143,7 @@ class RobertaABSA(nn.Module):
         cls = out[:, 0]
         if self.kind == "roberta":
             return self.fc(self.drop(cls))
-        # gather first sub-word of every word -> word-level states
+        # first sub-word of each word
         idx = b["first"].unsqueeze(-1).expand(-1, -1, out.size(-1))
         w = torch.gather(out, 1, idx)
         g = self.drop(F.relu(self.proj(w)))

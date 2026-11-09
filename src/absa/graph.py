@@ -14,8 +14,7 @@ def dep_edges(heads):
 
 
 def random_tree_edges(n, seed):
-    """Random tree with the same number of nodes/edges as a dependency tree
-    (control: same sparsity, no syntax)."""
+    """Random tree on n nodes (same edge count as a parse, no syntax)."""
     rng = random.Random(seed)
     order = list(range(n))
     rng.shuffle(order)
@@ -68,8 +67,7 @@ def tree_distances(heads, sources):
 
 
 def position_weights(n, fr, to):
-    """ASGCN position weighting: tokens far from the aspect get smaller weight,
-    the aspect itself gets 0 (its information enters via the masked readout)."""
+    """ASGCN position weights; 0 on the aspect itself."""
     w = np.zeros(n, dtype=np.float32)
     ctx = n - (to - fr)
     for i in range(n):
