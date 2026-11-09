@@ -59,9 +59,10 @@ class GATLayer(nn.Module):
             nn.init.zeros_(self.rel_bias.weight)
             nn.init.normal_(self.rel_msg.weight, std=0.02)
         self.drop = nn.Dropout(dropout)
-        self.out = nn.Linear(d_out, d_out)
-        self.norm = nn.LayerNorm(d_out)
-        self.res = nn.Linear(d_in, d_out) if d_in != d_out else nn.Identity()
+        if norm:
+            self.out = nn.Linear(d_out, d_out)
+            self.norm = nn.LayerNorm(d_out)
+            self.res = nn.Linear(d_in, d_out) if d_in != d_out else nn.Identity()
 
     def forward(self, h, adj, rel=None):
         B, N, _ = h.shape
@@ -82,9 +83,11 @@ class GATLayer(nn.Module):
             M.scatter_add_(2, rel, att.mean(-1))                      # B N R
             msg = msg + M @ self.rel_msg.weight
         if not self.use_norm:
-            # same output form as GCNLayer (ReLU, no residual/LayerNorm) so the
-            # ASGCN-style dot-product readout sees features on the same scale
-            return F.relu(self.out(msg))
+            # same output form as GCNLayer: ReLU(aggregated W h), no extra output
+            # projection / residual / LayerNorm (stacking a second linear map here
+            # made training unstable), so the ASGCN-style readout sees features on
+            # the same scale as with the GCN
+            return F.relu(msg)
         return self.norm(F.elu(self.out(msg)) + self.res(h))
 
 

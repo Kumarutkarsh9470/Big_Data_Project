@@ -25,7 +25,8 @@ MODEL_NAME = {"lstm": "BiLSTM+Att (no graph)", "gcn": "GCN (dep. tree)", "gat": 
               "roberta-gcn": "RoBERTa+GCN", "roberta-gat": "RoBERTa+R-GAT"}
 DS_ORDER = ["rest14", "lap14", "mams", "yelp", "amazon23", "amazon23_gold"]
 DS_NAME = {"rest14": "Rest14", "lap14": "Lap14", "mams": "MAMS", "yelp": "Yelp",
-           "amazon23": "Amazon23 (distant)", "amazon23_gold": "Amazon23 (gold)"}
+           "amazon23": "Amazon23 (distant)", "amazon23_gold": "Amazon23 (gold)",
+           "lap14+amazon23": "Lap14+Amazon23 (distant)"}
 
 
 def parse_name(n):

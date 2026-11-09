@@ -238,9 +238,10 @@ def main(argv=None):
     os.makedirs(args.out, exist_ok=True)
     out_json = os.path.join(args.out, name + ".json")
 
-    train = load_jsonl(data_path(args.dataset, "train"))
-    dev = load_jsonl(data_path(args.dataset, "dev"))
-    tests = {args.dataset: load_jsonl(data_path(args.dataset, "test"))}
+    parts = args.dataset.split("+")  # e.g. "lap14+amazon23" = union of training sets
+    train = [e for p in parts for e in load_jsonl(data_path(p, "train"))]
+    dev = [e for p in parts for e in load_jsonl(data_path(p, "dev"))]
+    tests = {p: load_jsonl(data_path(p, "test")) for p in parts}
     for extra in args.eval_on:
         tests[extra] = load_jsonl(data_path(extra, "test"))
     g = args.graph if args.graph != "none" else "dep"
@@ -249,7 +250,7 @@ def main(argv=None):
     vocab = tok = None
     if not is_plm:
         words = {t.lower() for ex in train + dev + [e for t in tests.values() for e in t] for t in ex["tokens"]}
-        gw, ge = load_glove_subset(sorted(words), os.path.join(ROOT, "resources", "cache", f"glove_{args.dataset}_{'_'.join(sorted(args.eval_on))}.npz"))
+        gw, ge = load_glove_subset(sorted(words), os.path.join(ROOT, "resources", "cache", f"glove_{args.dataset.replace('+', '-')}_{'_'.join(sorted(args.eval_on))}.npz"))
         vocab = Vocab(words, gw, ge, seed=args.seed)
         model = GloveGraphModel(vocab.emb, len(DEPS), kind=args.model, layers=args.layers, heads=args.heads,
                                 hidden=args.hidden, dropout=args.dropout, use_pos=not args.no_pos)

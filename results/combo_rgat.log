@@ -1,0 +1,12 @@
+[lap14+amazon23__rgat__s1] ep1 loss=0.6140 dev_acc=0.8299 dev_f1=0.8244
+[lap14+amazon23__rgat__s1] ep2 loss=0.4659 dev_acc=0.8439 dev_f1=0.8386
+[lap14+amazon23__rgat__s1] ep3 loss=0.4091 dev_acc=0.8561 dev_f1=0.8488
+[lap14+amazon23__rgat__s1] ep4 loss=0.3520 dev_acc=0.8776 dev_f1=0.8692
+[lap14+amazon23__rgat__s1] ep5 loss=0.3100 dev_acc=0.8794 dev_f1=0.8733
+[lap14+amazon23__rgat__s1] ep6 loss=0.2765 dev_acc=0.8832 dev_f1=0.8783
+[lap14+amazon23__rgat__s1] ep7 loss=0.2498 dev_acc=0.8907 dev_f1=0.8853
+[lap14+amazon23__rgat__s1] ep8 loss=0.2224 dev_acc=0.8841 dev_f1=0.8788
+[lap14+amazon23__rgat__s1] ep9 loss=0.2020 dev_acc=0.9000 dev_f1=0.8949
+[lap14+amazon23__rgat__s1] ep10 loss=0.1680 dev_acc=0.8991 dev_f1=0.8944
+[lap14+amazon23__rgat__s1] ep11 loss=0.1550 dev_acc=0.8916 dev_f1=0.8840
+[lap14+amazon23__rgat__s1] ep12 loss=0.1496 dev_acc=0.8925 dev_f1=0.8859

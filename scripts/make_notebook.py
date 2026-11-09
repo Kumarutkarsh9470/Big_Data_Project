@@ -80,7 +80,7 @@ print('\\ntree distance from "battery life":', dict(zip([t.text for t in doc], t
 fig, ax = plt.subplots(figsize=(5, 5)); ax.imshow(A, cmap='Blues')
 ax.set_xticks(range(len(doc))); ax.set_xticklabels([t.text for t in doc], rotation=90)
 ax.set_yticks(range(len(doc))); ax.set_yticklabels([t.text for t in doc]); ax.set_title('dependency adjacency (+ self loops)'); plt.show()""")
-md("""In the linear order, *great* and *dim* are both within 5 tokens of *screen*; in the tree, *dim* is 2 hops from *screen* while *great* is 3+ hops away (via the conjunction). The GNNs propagate information only along these edges, so the opinion word that is *syntactically* attached to an aspect dominates its representation.
+md("""In the linear order, *great* and *dim* are both exactly 3 tokens away from *screen*, so a purely sequential model has no positional cue for which opinion belongs to it. In the tree, *dim* is 2 hops from *screen* and *great* is 3 hops away (through the `conj` edge), while from *battery life* *great* is 2 hops away and *dim* 4. The GNNs propagate information only along these edges, so the opinion word that is *syntactically* attached to an aspect dominates its representation.
 
 **Models** (`src/absa/models.py`):
 * **BiLSTM+Att** – same encoder/readout as the GNNs, no graph (ablation baseline)

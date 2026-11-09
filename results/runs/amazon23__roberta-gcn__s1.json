@@ -1,0 +1,85 @@
+{
+ "name": "amazon23__roberta-gcn__s1",
+ "args": {
+  "dataset": "amazon23",
+  "model": "roberta-gcn",
+  "graph": "dep",
+  "layers": 2,
+  "heads": 4,
+  "hidden": 300,
+  "dropout": 0.5,
+  "no_pos": false,
+  "seed": 1,
+  "epochs": 4,
+  "patience": 8,
+  "bs": 16,
+  "lr": 2e-05,
+  "plm": "/home/user/Big_Data_Course_Project/resources/roberta-base-spacy",
+  "max_subwords": 128,
+  "threads": 4,
+  "eval_on": [
+   "amazon23_gold",
+   "lap14"
+  ],
+  "tag": "",
+  "save_model": null,
+  "out": "/home/user/Big_Data_Course_Project/results/runs"
+ },
+ "history": [
+  {
+   "epoch": 1,
+   "loss": 0.5315429684891476,
+   "dev_acc": 0.9283154121863799,
+   "dev_f1": 0.9247778130346903
+  },
+  {
+   "epoch": 2,
+   "loss": 0.12257632290000817,
+   "dev_acc": 0.954599761051374,
+   "dev_f1": 0.9520719202135132
+  },
+  {
+   "epoch": 3,
+   "loss": 0.05603963021870444,
+   "dev_acc": 0.956989247311828,
+   "dev_f1": 0.9549381075613682
+  },
+  {
+   "epoch": 4,
+   "loss": 0.020365096166520193,
+   "dev_acc": 0.956989247311828,
+   "dev_f1": 0.9551659951886672
+  }
+ ],
+ "train_time_s": 1658.8038909435272,
+ "n_params_trainable": 124649475,
+ "n_params_total": 124649475,
+ "glove_coverage": null,
+ "test": {
+  "amazon23": {
+   "acc": 0.9627039627039627,
+   "f1": 0.9608740508012232,
+   "n": 858,
+   "infer_time_s": 9.257709264755249,
+   "throughput": 92.6795144957151
+  },
+  "amazon23_gold": {
+   "acc": 0.5422222222222223,
+   "f1": 0.5198788098534292,
+   "n": 225,
+   "infer_time_s": 2.8086955547332764,
+   "throughput": 80.10836191228522
+  },
+  "lap14": {
+   "acc": 0.6833855799373041,
+   "f1": 0.6239291975631681,
+   "n": 638,
+   "infer_time_s": 8.334338426589966,
+   "throughput": 76.55076712082122
+  }
+ },
+ "dev": {
+  "acc": 0.956989247311828,
+  "f1": 0.9551659951886672
+ }
+}

@@ -41,7 +41,7 @@ def grid(name):
         for ds in ["yelp", "lap14", "rest14", "amazon23", "mams"]:
             ev = {"lap14": ["amazon23", "amazon23_gold"], "amazon23": ["amazon23_gold", "lap14"],
                   "rest14": ["yelp"], "yelp": ["rest14"]}.get(ds, [])
-            for m in ["roberta", "roberta-gat", "roberta-gcn"]:
+            for m in ["roberta", "roberta-gat"] + ([] if ds == "mams" else ["roberta-gcn"]):
                 J.append(job(ds, m, 1, eval_on=ev, extra=["--epochs", "3" if ds == "mams" else "4"]))
     elif name == "plm-seeds":
         for ds in ["yelp", "lap14", "rest14"]:
@@ -62,7 +62,9 @@ def main():
     os.makedirs(OUT, exist_ok=True)
     logdir = os.path.join(ROOT, "results", "logs")
     os.makedirs(logdir, exist_ok=True)
-    jobs = [(n, a) for n, a in grid(args.grid) if not os.path.exists(os.path.join(OUT, n + ".json"))]
+    running = subprocess.run(["ps", "-eo", "args"], capture_output=True, text=True).stdout
+    jobs = [(n, a) for n, a in grid(args.grid) if not os.path.exists(os.path.join(OUT, n + ".json"))
+            and " ".join(a) not in running]  # skip finished runs and runs already in progress
     if args.only:
         jobs = [(n, a) for n, a in jobs if n.split("__")[0] in args.only]
     print(f"{len(jobs)} jobs to run", flush=True)
